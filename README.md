@@ -36,31 +36,31 @@ In addition to the Webpack entry file, my project will also have the following J
 ## Timeline
 
 **Over the weekend**:
-- [] Read up on Matter.Js, do enough of their tutorials to feel comfortable with moving bodies around
-- [] Start on the project skeleton/webpack/NPM/etc.
+- [ ] Read up on Matter.Js, do enough of their tutorials to feel comfortable with moving bodies around
+- [ ] Start on the project skeleton/webpack/NPM/etc.
 
 **Day 1**: Finish up the project skeleton. Start to draw the shapes for my game board.  Goals for the day:
 
-- [x] Get `webpack` serving files and frame out index.html
-- [x] Draw some of my initial shapes, the ball and paddle pieces.
-- [x] Start to tinker with Matter.Js to create ball physics.
+- [ ] Get `webpack` serving files and frame out index.html
+- [ ] Draw some of my initial shapes, the ball and paddle pieces.
+- [ ] Start to tinker with Matter.Js to create ball physics.
 
 **Day 2**: Complete my board. Try to get my paddles working with my ball.
 
-- [x] Complete the board.js module with all shapes
-- [x] Get certain objects to light up/affect velocity on impact
-- [x] Try to get my paddle pivots working
+- [ ] Complete the board.js module with all shapes
+- [ ] Get certain objects to light up/affect velocity on impact
+- [ ] Try to get my paddle pivots working
 
 **Day 3**: Finish the paddle/ball mechanics, start the game logic.
 
-- [x] Get the paddles to change direction/velocity of the ball correctly
-- [] Introduce logic for updating, maintaing score/hish score in game.js
-- [] Introduce logic for ball "lives"
+- [ ] Get the paddles to change direction/velocity of the ball correctly
+- [ ] Introduce logic for updating, maintaing score/hish score in game.js
+- [ ] Introduce logic for ball "lives"
 
 **Day 4**: Finish game logic, Introduce bonus features, finish styling.
 
-- [x] Finish score, life logic
-- [x] Tie movement to keyboard controls
-- [] Add on multi-ball and bonus ball mode
-- [x] Style the board/modals
+- [ ] Finish score, life logic
+- [ ] Tie movement to keyboard controls
+- [ ] Add on multi-ball and bonus ball mode
+- [ ] Style the board/modals
 
