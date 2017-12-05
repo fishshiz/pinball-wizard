@@ -12,7 +12,6 @@ In Pinball Wizard, the user will be able to:
 
 - [ ] Manipulate the paddles to hit the ball
 - [ ] See their current and high scores displayed
-- [ ] Unlock bonus score features by surpassing certain scores
 - [ ] Play with an environment that emulates real world physics
 
 ## Wireframes
@@ -64,3 +63,6 @@ In addition to the Webpack entry file, my project will also have the following J
 - [ ] Add on multi-ball and bonus ball mode
 - [ ] Style the board/modals
 
+**Bonus**
+
+- [ ] Unlock bonus score features by surpassing certain scores
