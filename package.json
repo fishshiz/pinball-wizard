@@ -21,8 +21,12 @@
   "dependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
     "matter-js": "^0.14.0",
     "poly-decomp": "^0.2.1",
     "webpack": "^2.3.3"
+  },
+  "babel": {
+    "presets": ["es2015"]
   }
 }
