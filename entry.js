@@ -2,7 +2,8 @@ document.addEventListener("DOMContentLoaded", function(){
   let Engine = Matter.Engine,
       Render = Matter.Render,
       World = Matter.World,
-      Bodies = Matter.Bodies;
+      Bodies = Matter.Bodies,
+      Constraint = Matter.Constraint;
 
   // create an engine
   let engine = Engine.create();
@@ -18,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
   // create two boxes and a ground
-  let circle = Bodies.circle(225, 200, 15, 80);
+  let circle = Bodies.circle(285, 200, 15, 80);
   let circle1 = Bodies.circle(255, 120, 30, { isStatic: true });
   let circle2 = Bodies.circle(180, 200, 30, { isStatic: true });
   let circle3 = Bodies.circle(330, 200, 30, { isStatic: true });
@@ -35,12 +36,14 @@ document.addEventListener("DOMContentLoaded", function(){
   let leftPaddle = Bodies.trapezoid(205, 545, 20, 70, 0.25, { angle: (2 * Math.PI)/3, chamfer: { radius: 10 }, isStatic: true });
   let rightPaddleWallSlant = Bodies.rectangle(395, 490, 110, 20, { angle: (5 * Math.PI)/6, chamfer: { radius: 10 }, isStatic: true });
   let rightPaddleWallVert = Bodies.rectangle(435, 415, 120, 20, { angle: (Math.PI)/2, chamfer: { radius: 10 }, isStatic: true });
-  let rightPaddle = Bodies.trapezoid(305, 545, 20, 70, 0.25, { angle: (4 * Math.PI)/3, chamfer: { radius: 10 }, isStatic: true });
+  let rightHinge = Bodies.circle(325, 533, 5, { isStatic: true, render: { fillStyle: 'red'}});
+  let rightPaddle = Bodies.trapezoid(305, 545, 20, 70, 0.25, { angle: (4 * Math.PI)/3, chamfer: { radius: 10 }});
   let baseLeft = Bodies.rectangle(100, 550, 280, 20, { angle: Math.PI/6, chamfer: { radius: 10 }, isStatic: true });
   let baseRight = Bodies.rectangle(390, 565, 230, 20, { angle: (5 * Math.PI)/6, chamfer: { radius: 10 }, isStatic: true });
+  let rightConstraint = Constraint.create({ bodyA: rightPaddle, bodyB: rightHinge, pointA: {x: 20, y: -11 }, stiffness: 0, length: 0 });
 
   // add all of the bodies to the world
-  World.add(engine.world, [side, circle, leftThorn, rightThorn, leftBumper, rightBumper, circle1, circle2, circle3, baseLeft, leftPaddle, leftPaddleWallSlant, leftPaddleWallVert, rightPaddle, rightPaddleWallSlant, rightPaddleWallVert, baseRight, rightWall, leftWall, ballChute]);
+  World.add(engine.world, [side, circle, leftThorn, rightThorn, leftBumper, rightBumper, circle1, circle2, circle3, baseLeft, leftPaddle, leftPaddleWallSlant, leftPaddleWallVert, rightPaddle, rightHinge, rightConstraint, rightPaddleWallSlant, rightPaddleWallVert, baseRight, rightWall, leftWall, ballChute]);
 
   // create a renderer
   let render = Render.create({
