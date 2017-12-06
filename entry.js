@@ -1,42 +1,40 @@
-import Board from './app/assets/javascripts/board';
+import { circles, walls, innerWalls, bumpers, paddles, thorns } from './app/assets/javascripts/board';
+import Matter from 'Matter-js';
 
-let Engine = Matter.Engine,
-Render = Matter.Render,
-World = Matter.World,
-Bodies = Matter.Bodies,
-Constraint = Matter.Constraint;
+  let Engine = Matter.Engine,
+  Render = Matter.Render,
+  World = Matter.World,
+  Bodies = Matter.Bodies,
+  Constraint = Matter.Constraint;
 
-var engine;
-var world;
+  let engine;
+  let world;
 
-function setup() {
-  // create an engine
-  engine = Engine.create();
-  // create a renderer
-  let render = Render.create({
-      element: document.body,
-      engine: engine,
-      options: {
-        width: 550,
-        height: 650,
-        wireframes: false
-      }
+  function setup() {
+
+    engine = Engine.create();
+
+    let render = Render.create({
+        element: document.body,
+        engine: engine,
+        options: {
+          width: 550,
+          height: 650,
+          wireframes: false
+        }
+    });
+    world = engine.world;
+    const board = [circles(), walls(), innerWalls(), bumpers(), paddles(), thorns()];
+    World.add(engine.world, board.reduce((prev, curr) => {
+      return prev.concat(curr);
+    }));
+
+    Engine.run(engine);
+    Render.run(render);
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+
+    setup();
+
   });
-  world = engine.world;
-  World.add(engine.world, Board);
-
-  Engine.run(engine);
-}
-
-document.addEventListener("DOMContentLoaded", function(){
-
-  setup();
-
-
-
-  // add all of the bodies to the world
-
-
-
-
-});
