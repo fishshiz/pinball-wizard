@@ -14,6 +14,8 @@ import Matter from 'Matter-js';
   let highScore;
   let leftPaddleUp;
   let rightPaddleUp;
+  const bufferGroup = Matter.Body.nextGroup(true);
+  const paddleGroup = Matter.Body.nextGroup(true);
 
   function setup() {
 
@@ -35,8 +37,13 @@ import Matter from 'Matter-js';
     }));
 
     World.add(engine.world, [createBall()]);
-    console.log(World);
-    console.log(engine);
+    // engine.world.bodies[27].collisionFilter = { group: bufferGroup };
+    engine.world.bodies[21].collisionFilter = { group: bufferGroup };
+    engine.world.bodies[22].collisionFilter = { group: bufferGroup };
+    engine.world.bodies[23].collisionFilter = { group: bufferGroup };
+    engine.world.bodies[24].collisionFilter = { group: bufferGroup };
+    // engine.world.bodies[17].collisionFilter = { group: paddleGroup };
+    // engine.world.bodies[19].collisionFilter = { group: paddleGroup };
 
     Engine.run(engine);
     Render.run(render);
