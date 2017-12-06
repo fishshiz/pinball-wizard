@@ -10,6 +10,10 @@ import Matter from 'Matter-js';
 
   let engine;
   let world;
+  let score;
+  let highScore;
+  let leftPaddleUp;
+  let rightPaddleUp;
 
   function setup() {
 
@@ -31,13 +35,34 @@ import Matter from 'Matter-js';
     }));
 
     World.add(engine.world, [createBall()]);
+    console.log(World);
+    console.log(engine);
 
     Engine.run(engine);
     Render.run(render);
   }
 
+  function paddleCommands() {
+    document.addEventListener("keydown", function keyDown(e) {
+      let keyCode = e.keyCode;
+      if (keyCode === 37) {
+        Matter.Body.setAngularVelocity(engine.world.bodies[17], 2);
+        Matter.Body.setAngularVelocity(engine.world.bodies[19], 0);
+      } else if (keyCode===39) {
+        Matter.Body.setAngularVelocity(engine.world.bodies[19], 2);
+        Matter.Body.setAngularVelocity(engine.world.bodies[17], 0);
+
+      } else {
+        Matter.Body.setAngle(engine.world.bodies[19], (4 * Math.PI)/3);
+        Matter.Body.setAngle(engine.world.bodies[17], (2 * Math.PI)/3);
+      }
+
+    }
+  );
+}
+
   document.addEventListener("DOMContentLoaded", function(){
 
     setup();
-
+    paddleCommands();
   });
