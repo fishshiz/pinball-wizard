@@ -1,4 +1,5 @@
 import { circles, walls, innerWalls, bumpers, paddles, thorns } from './app/assets/javascripts/board';
+import { createBall } from './app/assets/javascripts/ball';
 import Matter from 'Matter-js';
 
   let Engine = Matter.Engine,
@@ -15,7 +16,7 @@ import Matter from 'Matter-js';
     engine = Engine.create();
 
     let render = Render.create({
-        element: document.body,
+        canvas: document.getElementById('pinball-canvas'),
         engine: engine,
         options: {
           width: 550,
@@ -28,6 +29,8 @@ import Matter from 'Matter-js';
     World.add(engine.world, board.reduce((prev, curr) => {
       return prev.concat(curr);
     }));
+
+    World.add(engine.world, [createBall()]);
 
     Engine.run(engine);
     Render.run(render);

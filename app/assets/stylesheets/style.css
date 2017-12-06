@@ -1,0 +1,29 @@
+body {
+  display: flex;
+  justify-content: center;
+}
+.icons {
+  height: 650px;
+  width: 100px;
+  background-color: rgb(151, 218, 29);
+}
+
+.scorers-table {
+  height: 650px;
+  width: 300px;
+  background-color: rgb(151, 218, 29);
+  color: rgb(20, 133, 68);
+  font-family: sans-serif;
+  font-size: 25px;
+  top: 0
+}
+
+.scores {
+  display: flex;
+  justify-content: space-between;
+}
+
+.score-nums {
+  display: flex;
+  justify-content: space-between;
+}

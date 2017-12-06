@@ -4,16 +4,34 @@
     <meta charset="utf-8">
     <script src="./node_modules/poly-decomp/build/decomp.js"></script>
     <script src="./node_modules/matter-js/build/matter.js"></script>
+    <link rel="stylesheet" href="./app/assets/stylesheets/style.css">
     <script type="text/javascript" src="./app/assets/javascripts/bundle.js" charset="utf-8"></script>
     <title>PinballWzrd</title>
-    <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    </style>
   </head>
   <body>
+    <div class="icons">
+      <a class="linkedin" href="https://www.linkedin.com/in/edan-lewis-752633133/">
+        <i class="fa fa-linkedin-square" aria-hidden="true"></i></a>
+      <a href="https://github.com/fishshiz">
+      <i class="fa fa-github" aria-hidden="true"></i></a>
+  </div>
+  <canvas id="pinball-canvas"></canvas>
+  <div class="scorers-table">
+    <div class="scores">
+      <span>Score</span>
+      <span>High Score</span>
+    </div>
+    <div class="score-nums">
+      <span>0</span>
+      <span>100</span>
+    </div>
+    <span>Balls</span>
+    <span>3</span>
+    <div class="instructions">
+      Press the Arrow keys to control paddles.
+      Press the Up arrow to launch the ball.
+      
+    </div>
+  </div>
   </body>
 </html>
