@@ -55,6 +55,8 @@ import Matter from 'Matter-js';
     let rightPaddle = Bodies.trapezoid(300, 540, 20, 70, 0.25, { angle: (4 * Math.PI)/3, chamfer: { radius: 10 }});
     let rightHinge = Bodies.circle(325, 533, 5, { isStatic: true, render: { fillStyle: 'red'}});
     let rightConstraint = Constraint.create({ bodyA: rightPaddle, bodyB: rightHinge, pointA: {x: 20, y: -11 }, stiffness: 0, length: 0 });
+    let leftBuffer = Bodies.circle(190, 620, 50, { isStatic: true});
+    let rightBuffer = Bodies.circle(300, 620, 50, { isStatic: true});
 
-    return [leftPaddle, leftHinge, leftConstraint, rightPaddle, rightHinge, rightConstraint];
+    return [leftPaddle, leftHinge, leftConstraint, rightPaddle, rightHinge, rightConstraint, leftBuffer, rightBuffer];
   };
