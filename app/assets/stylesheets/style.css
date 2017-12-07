@@ -6,6 +6,7 @@ body {
   height: 650px;
   width: 100px;
   background-color: rgb(151, 218, 29);
+  list-style: none;
 }
 
 .scorers-table {

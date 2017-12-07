@@ -61,7 +61,7 @@ import Matter from 'Matter-js';
     if (ballCount >= 1 && inPlay === false) {
       paddleCommands();
       // launch();
-      World.add(engine.world, [launch()]);
+      World.add(engine.world, [createBall()]);
       inPlay = true;
       handleEvents();
     }
@@ -78,9 +78,14 @@ import Matter from 'Matter-js';
       e.pairs.bodyA === engine.world.bodies[1] ||
     e.pairs.bodyA === engine.world.bodies[2]) {
       updateScore(10);
+      console.log(score);
       e.pairs.bodyA.render.fillStyle = 'rgb(176, 145, 80)';
       setTimeout(function() {
         e.pairs.bodyA.render.fillStyle = 'rgb(230, 149, 42)';}, 100);
+      } else if (e.pairs.bodyA === engine.world.bodies[15] ||
+      e.pairs.bodyA === engine.world.bodies[16]) {
+        updateScore(5);
+        console.log(score);
       }
     });
   }
