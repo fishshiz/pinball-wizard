@@ -59,10 +59,10 @@ import Matter from 'Matter-js';
   };
 
   export const paddles = function paddles() {
-    let leftPaddle = Bodies.trapezoid(190, 540, 20, 70, 0.25, { label: leftPaddle, angle: (2 * Math.PI)/3, chamfer: { radius: 10 }, render: { fillStyle: COLORS.PADDLE }});
+    let leftPaddle = Bodies.trapezoid(190, 540, 20, 70, 0.25, { label: 'leftPaddle', angle: (2 * Math.PI)/3, chamfer: { radius: 10 }, render: { fillStyle: COLORS.PADDLE }});
     let leftHinge = Bodies.circle(172, 529, 5, { isStatic: true});
     let leftConstraint = Constraint.create({ bodyA: leftPaddle, bodyB: leftHinge, pointA: {x: -18, y: -11 }, stiffness: 0, length: 0 });
-    let rightPaddle = Bodies.trapezoid(300, 540, 20, 70, 0.25, { angle: (4 * Math.PI)/3, chamfer: { radius: 10 }, render: { fillStyle: COLORS.PADDLE }});
+    let rightPaddle = Bodies.trapezoid(300, 540, 20, 70, 0.25, { label: 'rightPaddle', angle: (4 * Math.PI)/3, chamfer: { radius: 10 }, render: { fillStyle: COLORS.PADDLE }});
     let rightHinge = Bodies.circle(318, 529, 5, { isStatic: true});
     let rightConstraint = Constraint.create({ bodyA: rightPaddle, bodyB: rightHinge, pointA: {x: 18, y: -11 }, stiffness: 0, length: 0 });
     let leftBuffer = Bodies.circle(190, 605, 50, { isStatic: true, render: { visible: false }});

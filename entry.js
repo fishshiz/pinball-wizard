@@ -1,6 +1,6 @@
 import { circles, walls, innerWalls, bumpers, paddles, thorns } from './app/assets/javascripts/board';
-import { launch } from './app/assets/javascripts/game';
-import { createBall } from './app/assets/javascripts/ball';
+// import { launch } from './app/assets/javascripts/game';
+import { createBall, launch } from './app/assets/javascripts/ball';
 import Matter from 'Matter-js';
 
   let Engine = Matter.Engine,
@@ -12,7 +12,9 @@ import Matter from 'Matter-js';
   let engine;
   let world;
   let score;
+  let inPlay;
   let highScore;
+  let ballCount;
   let leftPaddleUp;
   let rightPaddleUp;
   const bufferGroup = Matter.Body.nextGroup(true);
@@ -38,7 +40,11 @@ import Matter from 'Matter-js';
       return prev.concat(curr);
     }));
 
-    World.add(engine.world, [createBall()]);
+    ballCount = 3;
+    score = 0;
+    inPlay = false;
+
+    // World.add(engine.world, [createBall()]);
     // engine.world.bodies[27].collisionFilter = { group: bufferGroup };
     engine.world.bodies[21].collisionFilter = { group: bufferGroup };
     engine.world.bodies[22].collisionFilter = { group: bufferGroup };
@@ -46,9 +52,42 @@ import Matter from 'Matter-js';
     engine.world.bodies[24].collisionFilter = { group: bufferGroup };
     // engine.world.bodies[17].collisionFilter = { group: paddleGroup };
     // engine.world.bodies[19].collisionFilter = { group: paddleGroup };
-
+    console.log(engine);
     Engine.run(engine);
     Render.run(render);
+  }
+
+  function playGame() {
+    if (ballCount >= 1 && inPlay === false) {
+      paddleCommands();
+      // launch();
+      World.add(engine.world, [launch()]);
+      inPlay = true;
+      handleEvents();
+    }
+  }
+
+  function handleEvents() {
+    if (engine.world.bodies[27].position.y > 650) {
+      inPlay = false;
+      ballCount -= 1;
+    }
+
+    Matter.Events.on(engine, 'collisionStart', function(e) {
+      if (e.pairs.bodyA === engine.world.bodies[0] ||
+      e.pairs.bodyA === engine.world.bodies[1] ||
+    e.pairs.bodyA === engine.world.bodies[2]) {
+      updateScore(10);
+      e.pairs.bodyA.render.fillStyle = 'rgb(176, 145, 80)';
+      setTimeout(function() {
+        e.pairs.bodyA.render.fillStyle = 'rgb(230, 149, 42)';}, 100);
+      }
+    });
+  }
+
+  function updateScore(points) {
+    score += points;
+    if (score > highScore) highScore = score;
   }
 
   function paddleCommands() {
@@ -59,18 +98,22 @@ import Matter from 'Matter-js';
       let keyCode = e.keyCode;
       if (keyCode === 37 && leftFired === false) {
         leftFired = true;
-        Matter.Body.setAngularVelocity(engine.world.bodies[17], 0.5);
+        Matter.Body.setAngularVelocity(engine.world.bodies[17], -2);
       } else if (keyCode === 39  && rightFired === false) {
         rightFired = true;
-        Matter.Body.setAngularVelocity(engine.world.bodies[19], 0.5);
+        Matter.Body.setAngularVelocity(engine.world.bodies[19], 2);
       }
     });
     document.addEventListener("keyup", function keUp(e) {
       let keyCode = e.keyCode;
       if (keyCode === 37 ) {
         leftFired = false;
+        Matter.Body.setAngle(engine.world.bodies[17], (2 * Math.PI)/3);
+        // engine.world.bodies[17].isSleeping = true;
       } else if (keyCode === 39) {
         rightFired = false;
+        Matter.Body.setAngle(engine.world.bodies[19], (4 * Math.PI)/3);
+        // engine.world.bodies[19].isSleeping = true;
       }
     }
   );
@@ -79,6 +122,5 @@ import Matter from 'Matter-js';
   document.addEventListener("DOMContentLoaded", function(){
 
     setup();
-    paddleCommands();
-    launch();
+    playGame();
   });
