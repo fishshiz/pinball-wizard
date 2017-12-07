@@ -1,6 +1,6 @@
 import { circles, walls, innerWalls, bumpers, paddles, thorns } from './app/assets/javascripts/board';
 // import { launch } from './app/assets/javascripts/game';
-import { createBall, launch } from './app/assets/javascripts/ball';
+// import { createBall, launch } from './app/assets/javascripts/ball';
 import Matter from 'Matter-js';
 
   let Engine = Matter.Engine,
@@ -20,9 +20,9 @@ import Matter from 'Matter-js';
   const bufferGroup = Matter.Body.nextGroup(true);
   const paddleGroup = Matter.Body.nextGroup(true);
 
+  engine = Engine.create();
   function setup() {
 
-    engine = Engine.create();
 
     let render = Render.create({
         canvas: document.getElementById('pinball-canvas'),
@@ -60,11 +60,32 @@ import Matter from 'Matter-js';
   function playGame() {
     if (ballCount >= 1 && inPlay === false) {
       paddleCommands();
-      // launch();
-      World.add(engine.world, [createBall()]);
+      launch();
       inPlay = true;
-      handleEvents();
+      // handleEvents();
     }
+  }
+
+  function launch() {
+    let launched = false;
+
+    document.addEventListener("keydown", function keyDown(e) {
+      let keyCode = e.keyCode;
+      if (keyCode === 38 || keyCode === 32) {
+        let pinball = createBall();
+        World.add(engine.world, pinball);
+        Matter.Body.setPosition(pinball, { x: 500, y: 650 });
+        Matter.Body.setVelocity(pinball, {x: 0, y: -25 });
+      }
+
+    }
+  );
+  }
+
+  function createBall() {
+    let ball = Bodies.circle(0, 0, 15);
+
+    return ball;
   }
 
   function handleEvents() {
@@ -72,7 +93,7 @@ import Matter from 'Matter-js';
       inPlay = false;
       ballCount -= 1;
     }
-
+    console.log("test");
     Matter.Events.on(engine, 'collisionStart', function(e) {
       if (e.pairs.bodyA === engine.world.bodies[0] ||
       e.pairs.bodyA === engine.world.bodies[1] ||
@@ -103,22 +124,24 @@ import Matter from 'Matter-js';
       let keyCode = e.keyCode;
       if (keyCode === 37 && leftFired === false) {
         leftFired = true;
-        Matter.Body.setAngularVelocity(engine.world.bodies[17], -2);
+        Matter.Body.setAngularVelocity(engine.world.bodies[17], 2);
+        // engine.world.bodies[17].isSleeping = true;
       } else if (keyCode === 39  && rightFired === false) {
         rightFired = true;
         Matter.Body.setAngularVelocity(engine.world.bodies[19], 2);
+        // engine.world.bodies[19].isSleeping = true;
       }
     });
     document.addEventListener("keyup", function keUp(e) {
       let keyCode = e.keyCode;
       if (keyCode === 37 ) {
         leftFired = false;
-        Matter.Body.setAngle(engine.world.bodies[17], (2 * Math.PI)/3);
-        // engine.world.bodies[17].isSleeping = true;
+        // Matter.Body.setAngle(engine.world.bodies[17], (2 * Math.PI)/3);
+        engine.world.bodies[17].isSleeping = true;
       } else if (keyCode === 39) {
         rightFired = false;
-        Matter.Body.setAngle(engine.world.bodies[19], (4 * Math.PI)/3);
-        // engine.world.bodies[19].isSleeping = true;
+        // Matter.Body.setAngle(engine.world.bodies[19], (4 * Math.PI)/3);
+        engine.world.bodies[19].isSleeping = true;
       }
     }
   );
