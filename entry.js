@@ -1,4 +1,5 @@
 import { circles, walls, innerWalls, bumpers, paddles, thorns } from './app/assets/javascripts/board';
+import { launch } from './app/assets/javascripts/game';
 import { createBall } from './app/assets/javascripts/ball';
 import Matter from 'Matter-js';
 
@@ -31,6 +32,7 @@ import Matter from 'Matter-js';
         }
     });
     world = engine.world;
+    world.gravity.y = 0.75;
     const board = [circles(), walls(), innerWalls(), bumpers(), paddles(), thorns()];
     World.add(engine.world, board.reduce((prev, curr) => {
       return prev.concat(curr);
@@ -50,20 +52,26 @@ import Matter from 'Matter-js';
   }
 
   function paddleCommands() {
-    document.addEventListener("keydown", function keyDown(e) {
+    var leftFired = false;
+    var rightFired = false;
+
+    document.addEventListener("keydown", function keDown(e) {
       let keyCode = e.keyCode;
-      if (keyCode === 37) {
-        Matter.Body.setAngularVelocity(engine.world.bodies[17], 2);
-        Matter.Body.setAngularVelocity(engine.world.bodies[19], 0);
-      } else if (keyCode===39) {
-        Matter.Body.setAngularVelocity(engine.world.bodies[19], 2);
-        Matter.Body.setAngularVelocity(engine.world.bodies[17], 0);
-
-      } else {
-        Matter.Body.setAngle(engine.world.bodies[19], (4 * Math.PI)/3);
-        Matter.Body.setAngle(engine.world.bodies[17], (2 * Math.PI)/3);
+      if (keyCode === 37 && leftFired === false) {
+        leftFired = true;
+        Matter.Body.setAngularVelocity(engine.world.bodies[17], 0.5);
+      } else if (keyCode === 39  && rightFired === false) {
+        rightFired = true;
+        Matter.Body.setAngularVelocity(engine.world.bodies[19], 0.5);
       }
-
+    });
+    document.addEventListener("keyup", function keUp(e) {
+      let keyCode = e.keyCode;
+      if (keyCode === 37 ) {
+        leftFired = false;
+      } else if (keyCode === 39) {
+        rightFired = false;
+      }
     }
   );
 }
@@ -72,4 +80,5 @@ import Matter from 'Matter-js';
 
     setup();
     paddleCommands();
+    launch();
   });
