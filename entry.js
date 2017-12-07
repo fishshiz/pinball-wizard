@@ -52,17 +52,16 @@ import Matter from 'Matter-js';
     engine.world.bodies[24].collisionFilter = { group: bufferGroup };
     // engine.world.bodies[17].collisionFilter = { group: paddleGroup };
     // engine.world.bodies[19].collisionFilter = { group: paddleGroup };
-    console.log(engine);
     Engine.run(engine);
     Render.run(render);
   }
 
   function playGame() {
+    paddleCommands();
     if (ballCount >= 1 && inPlay === false) {
-      paddleCommands();
       launch();
       inPlay = true;
-      // handleEvents();
+      handleEvents();
     }
   }
 
@@ -71,11 +70,14 @@ import Matter from 'Matter-js';
 
     document.addEventListener("keydown", function keyDown(e) {
       let keyCode = e.keyCode;
-      if (keyCode === 38 || keyCode === 32) {
+      if (launched === false && keyCode === 38 || keyCode === 32) {
         let pinball = createBall();
+        pinball.label = 'pinball';
         World.add(engine.world, pinball);
         Matter.Body.setPosition(pinball, { x: 500, y: 650 });
         Matter.Body.setVelocity(pinball, {x: 0, y: -25 });
+        console.log(engine.world);
+        launched = true;
       }
 
     }
@@ -84,16 +86,21 @@ import Matter from 'Matter-js';
 
   function createBall() {
     let ball = Bodies.circle(0, 0, 15);
-
+    ball.label = 'pinball';
     return ball;
   }
 
   function handleEvents() {
-    if (engine.world.bodies[27].position.y > 650) {
+    let pinball = engine.world.bodies.slice(-1);
+    console.log('pinball -', pinball);
+    console.log(engine.world.bodies);
+
+    if (pinball.position.y > 650) {
+      console.log('pinball -', pinball.position.y);
       inPlay = false;
       ballCount -= 1;
+      console.log(ballCount);
     }
-    console.log("test");
     Matter.Events.on(engine, 'collisionStart', function(e) {
       if (e.pairs.bodyA === engine.world.bodies[0] ||
       e.pairs.bodyA === engine.world.bodies[1] ||
@@ -113,7 +120,11 @@ import Matter from 'Matter-js';
 
   function updateScore(points) {
     score += points;
-    if (score > highScore) highScore = score;
+    document.getElementById('score').innerHTML = score;
+    if (score > highScore) {
+      highScore = score;
+      document.getElementById('high-score').innerHTML = highScore;
+    }
   }
 
   function paddleCommands() {
