@@ -5,15 +5,27 @@ body {
 .icons {
   height: 650px;
   width: 100px;
-  background-color: rgb(151, 218, 29);
+  background-color: rgb(76, 128, 81);
   list-style: none;
+}
+
+.icons li {
+  height: 30%;
+}
+
+a {
+  height: 100%;
+  width: 100%;
+  color: rgb(157, 205, 124);
+  background-color: rgb(76, 128, 81);
+  text-decoration: none;
 }
 
 .scorers-table {
   height: 650px;
   width: 300px;
-  background-color: rgb(151, 218, 29);
-  color: rgb(20, 133, 68);
+  background-color: rgb(76, 128, 81);
+  color: rgb(157, 205, 124);
   font-family: sans-serif;
   font-size: 25px;
   top: 0

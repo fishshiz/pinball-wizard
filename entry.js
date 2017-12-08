@@ -17,11 +17,12 @@ import Matter from 'Matter-js';
   let ballCount;
   let leftPaddleUp;
   let rightPaddleUp;
+  let listening = false;
   const bufferGroup = Matter.Body.nextGroup(true);
   const paddleGroup = Matter.Body.nextGroup(true);
 
-  engine = Engine.create();
   function setup() {
+    engine = Engine.create();
 
 
     let render = Render.create({
@@ -33,6 +34,8 @@ import Matter from 'Matter-js';
           wireframes: false
         }
     });
+
+    ballCount = 3;
     world = engine.world;
     world.gravity.y = 0.75;
     const board = [circles(), walls(), innerWalls(), bumpers(), paddles(), thorns()];
@@ -40,7 +43,7 @@ import Matter from 'Matter-js';
       return prev.concat(curr);
     }));
 
-    ballCount = 3;
+
     score = 0;
     inPlay = false;
 
@@ -56,30 +59,21 @@ import Matter from 'Matter-js';
     Render.run(render);
   }
 
-  function playGame() {
-    paddleCommands();
-    if (ballCount >= 1 && inPlay === false) {
-      launch();
-      inPlay = true;
-      handleEvents();
-    }
-  }
 
   function launch() {
-    let launched = false;
 
-    document.addEventListener("keydown", function keyDown(e) {
+    window.addEventListener("keydown", function keyDown(e) {
       let keyCode = e.keyCode;
-      if (launched === false && keyCode === 38 || keyCode === 32) {
+      if ((inPlay === false && keyCode === 38 && ballCount > 0) ||
+      (inPlay === false && keyCode === 32 && ballCount > 0)) {
         let pinball = createBall();
         pinball.label = 'pinball';
         World.add(engine.world, pinball);
         Matter.Body.setPosition(pinball, { x: 500, y: 650 });
-        Matter.Body.setVelocity(pinball, {x: 0, y: -25 });
-        console.log(engine.world);
-        launched = true;
-      }
+        Matter.Body.setVelocity(pinball, {x: 0, y: (Math.floor(Math.random() * -35) - 25) });
+        inPlay = true;
 
+      }
     }
   );
   }
@@ -90,32 +84,40 @@ import Matter from 'Matter-js';
     return ball;
   }
 
-  function handleEvents() {
-    let pinball = engine.world.bodies.slice(-1);
-    console.log('pinball -', pinball);
-    console.log(engine.world.bodies);
+  function findPinball(obj) {
+    if(obj.label === 'pinball') return true;
+  }
 
-    if (pinball.position.y > 650) {
-      console.log('pinball -', pinball.position.y);
-      inPlay = false;
-      ballCount -= 1;
-      console.log(ballCount);
+  function ballOut() {
+    if (inPlay) {
+      listening = true;
+      let pinball = engine.world.bodies.filter(findPinball);
+      let ballTracker = setInterval( function(){
+        if (pinball[0].position.y > 650) {
+          Matter.Composite.remove(engine.world, pinball);
+          console.log("humor me");
+          clearInterval(ballTracker);
+          inPlay = false;
+          ballCount -= 1;
+          listening = false;
+        }
+      }, 500);
     }
-    Matter.Events.on(engine, 'collisionStart', function(e) {
-      if (e.pairs.bodyA === engine.world.bodies[0] ||
-      e.pairs.bodyA === engine.world.bodies[1] ||
-    e.pairs.bodyA === engine.world.bodies[2]) {
-      updateScore(10);
-      console.log(score);
-      e.pairs.bodyA.render.fillStyle = 'rgb(176, 145, 80)';
-      setTimeout(function() {
-        e.pairs.bodyA.render.fillStyle = 'rgb(230, 149, 42)';}, 100);
-      } else if (e.pairs.bodyA === engine.world.bodies[15] ||
-      e.pairs.bodyA === engine.world.bodies[16]) {
-        updateScore(5);
-        console.log(score);
-      }
-    });
+    // Matter.Events.on(engine, 'collisionStart', function(e) {
+    //   if (e.pairs.bodyA === engine.world.bodies[0] ||
+    //   e.pairs.bodyA === engine.world.bodies[1] ||
+    //   e.pairs.bodyA === engine.world.bodies[2]) {
+    //   updateScore(10);
+    //   console.log(score);
+    //   e.pairs.bodyA.render.fillStyle = 'rgb(176, 145, 80)';
+    //   setTimeout(function() {
+    //     e.pairs.bodyA.render.fillStyle = 'rgb(230, 149, 42)';}, 100);
+    //   } else if (e.pairs.bodyA === engine.world.bodies[15] ||
+    //   e.pairs.bodyA === engine.world.bodies[16]) {
+    //     updateScore(5);
+    //     console.log(score);
+    //   }
+    // });
   }
 
   function updateScore(points) {
@@ -145,6 +147,7 @@ import Matter from 'Matter-js';
     });
     document.addEventListener("keyup", function keUp(e) {
       let keyCode = e.keyCode;
+      console.log(ballCount);
       if (keyCode === 37 ) {
         leftFired = false;
         // Matter.Body.setAngle(engine.world.bodies[17], (2 * Math.PI)/3);
@@ -154,6 +157,12 @@ import Matter from 'Matter-js';
         // Matter.Body.setAngle(engine.world.bodies[19], (4 * Math.PI)/3);
         engine.world.bodies[19].isSleeping = true;
       }
+      if (ballCount > 0) {
+        launch();
+        if (listening === false) {
+          ballOut();
+        }
+      }
     }
   );
 }
@@ -161,5 +170,6 @@ import Matter from 'Matter-js';
   document.addEventListener("DOMContentLoaded", function(){
 
     setup();
-    playGame();
+    paddleCommands();
+
   });

@@ -26,11 +26,11 @@ import Matter from 'Matter-js';
     let leftWall = Bodies.rectangle(0, 325, 650, 20, { angle: Math.PI / 2, isStatic: true, render: { fillStyle: COLORS.WALLS } });
     let rightWall = Bodies.rectangle(550, 325, 650, 20, { angle: Math.PI / 2, isStatic: true, render: { fillStyle: COLORS.WALLS } });
     let ceiling = Bodies.rectangle(275, 0, 550, 20, { isStatic: true, render: { fillStyle: COLORS.WALLS } });
-    let ballChute = Bodies.rectangle(490, 455, 400, 20, { angle: Math.PI / 2, chamfer: { radius: 10 }, isStatic: true, render: { fillStyle: COLORS.WALLS }, render: { fillStyle: COLORS.WALLS } });
+    let ballChute = Bodies.rectangle(490, 455, 400, 20, { angle: Math.PI / 2, chamfer: { radius: 10 }, isStatic: true, render: { fillStyle: COLORS.WALLS } });
     let baseLeft = Bodies.rectangle(90, 560, 220, 20, { angle: Math.PI/6, chamfer: { radius: 10 }, isStatic: true, render: { fillStyle: COLORS.WALLS } });
     let baseRight = Bodies.rectangle(400, 560, 220, 20, { angle: (5 * Math.PI)/6, chamfer: { radius: 10 }, isStatic: true, render: { fillStyle: COLORS.WALLS } });
-    let leftDiag = Bodies.rectangle(120, 80, 350, 20, { angle: (5 * Math.PI)/6, chamfer: { radius: 10 }, isStatic: true, render: { fillStyle: COLORS.WALLS } });
-    let rightDiag = Bodies.rectangle(400, 100, 380, 20, { angle: Math.PI/6, chamfer: { radius: 10 }, isStatic: true, render: { fillStyle: COLORS.WALLS } });
+    let leftDiag = Bodies.rectangle(100, 0, 350, 200, { angle: (5 * Math.PI)/6, chamfer: { radius: 10 }, isStatic: true, render: { fillStyle: COLORS.WALLS } });
+    let rightDiag = Bodies.rectangle(420, 0, 400, 200, { angle: Math.PI/6, chamfer: { radius: 10 }, isStatic: true, render: { fillStyle: COLORS.WALLS } });
 
     return [leftWall, rightWall, ceiling, ballChute, baseLeft, baseRight, leftDiag, rightDiag];
   };
@@ -60,6 +60,7 @@ import Matter from 'Matter-js';
 
   export const paddles = function paddles() {
     let leftPaddle = Bodies.trapezoid(190, 540, 20, 70, 0.25, { label: 'leftPaddle', angle: (2 * Math.PI)/3, chamfer: { radius: 10 }, render: { fillStyle: COLORS.PADDLE }});
+    // Matter.Body.setDensity(leftPaddle, 5000);
     let leftHinge = Bodies.circle(172, 529, 5, { isStatic: true});
     let leftConstraint = Constraint.create({ bodyA: leftPaddle, bodyB: leftHinge, pointA: {x: -18, y: -11 }, stiffness: 0, length: 0 });
     let rightPaddle = Bodies.trapezoid(300, 540, 20, 70, 0.25, { label: 'rightPaddle', angle: (4 * Math.PI)/3, chamfer: { radius: 10 }, render: { fillStyle: COLORS.PADDLE }});
