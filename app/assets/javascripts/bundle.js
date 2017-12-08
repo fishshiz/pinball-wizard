@@ -10460,14 +10460,12 @@ function ballOut() {
   _MatterJs2.default.Events.on(engine, 'collisionStart', function (event) {
     if (event.pairs.bodyA === engine.world.bodies[0] || event.pairs.bodyA === engine.world.bodies[1] || event.pairs.bodyA === engine.world.bodies[2]) {
       updateScore(10);
-      console.log(score);
       event.pairs.bodyA.render.fillStyle = 'rgb(176, 145, 80)';
       setTimeout(function () {
         event.pairs.bodyA.render.fillStyle = 'rgb(230, 149, 42)';
       }, 100);
     } else if (event.pairs.bodyA === engine.world.bodies[15] || event.pairs.bodyA === engine.world.bodies[16]) {
       updateScore(5);
-      console.log(score);
     }
   });
 }
@@ -10490,22 +10488,18 @@ function paddleCommands() {
     if (keyCode === 37 && leftFired === false) {
       leftFired = true;
       _MatterJs2.default.Body.setAngularVelocity(engine.world.bodies[17], -2);
-      // engine.world.bodies[17].isSleeping = true;
     } else if (keyCode === 39 && rightFired === false) {
       rightFired = true;
       _MatterJs2.default.Body.setAngularVelocity(engine.world.bodies[19], 2);
-      // engine.world.bodies[19].isSleeping = true;
     }
   });
   document.addEventListener("keyup", function keUp(e) {
     var keyCode = e.keyCode;
     if (keyCode === 37) {
       leftFired = false;
-      // Matter.Body.setAngle(engine.world.bodies[17], (2 * Math.PI)/3);
       engine.world.bodies[17].isSleeping = true;
     } else if (keyCode === 39) {
       rightFired = false;
-      // Matter.Body.setAngle(engine.world.bodies[19], (4 * Math.PI)/3);
       engine.world.bodies[19].isSleeping = true;
     }
     if (ballCount > 0) {

@@ -4,7 +4,61 @@
 
 Pinball Wizard is a modern JS take on an arcade classic. Users will be able to compete against themselves to keep the ball rolling and surpass their high score.
 
-As their score continues to climb, the user will begin to notice hidden features of the game (like multiball/double points balls). The controls will be very simple, just up-arrow to launch the ball, left/right arrows to move paddles, and spacebar to pause the game.
+As their score continues to climb, the user will begin to notice hidden features of the game (like multi-ball/double points balls). The controls will be very simple, just up-arrow to launch the ball, left/right arrows to move paddles, and spacebar to pause the game.
+
+Check out the live version [here.](https://fishshiz.github.io/pinball-wizard/)
+
+## Technology Overview
+
+I built Pinball Wizard in about 5 days. It was a great exercise in gaining understanding and experience in Matter.js and physics libraries. The whole game is built using Javascript, with ball and paddle physics handled by Matter.js and rendering via HTML5 canvas.
+
+## Pinball Monitoring
+
+One of the significant challenges that I faced in this project was managing multiple asynchronous event listeners to keep track of the state of the pinball. It was the single threaded nature of JavaScript that made this a challenge. I ultimately solved this by appending the necessary functions onto a keyup event listener that I was already using to monitor key commands controlling paddle movement. By using a boolean variable along with my ball tracking method, I was able to invoke it just once per round, checking for ball position on an interval throughout the stint of that round.
+
+```document.addEventListener("keyup", function keUp(e) {
+  let keyCode = e.keyCode;
+  if (keyCode === 37 ) {
+    leftFired = false;
+    engine.world.bodies[17].isSleeping = true;
+  } else if (keyCode === 39) {
+    rightFired = false;
+    engine.world.bodies[19].isSleeping = true;
+  }
+  if (ballCount > 0) {
+    launch();
+    if (listening === false) {
+      ballOut();
+    }
+  }
+}
+```
+In the above snippet, I tie the my monitoring function (ballOut) to my key up listener.
+
+```if (inPlay) {
+  listening = true;
+  let pinball = engine.world.bodies.filter(findPinball);
+  let ballTracker = setInterval( function(){
+    if (pinball[0].position.y > 650) {
+      Matter.Composite.remove(engine.world, pinball);
+      clearInterval(ballTracker);
+      inPlay = false;
+      ballCount -= 1;
+      document.getElementById('ball-count').innerHTML = ballCount;
+      listening = false;
+    }
+  }, 500);
+}
+```
+And here I fire my setInterval just once, thanks to a boolean variable (listening).
+
+## Paddle Motions
+
+The most difficult part of this project was figuring out how to get my paddles to move correctly, like paddles on a real pinball table. I still have a lot of work to do on this, but I've already taken care of a few of the aspects. I am currently moving paddles by setting their angular velocity on a keyDown event. Initially, they would fire multiple times if the key was held down. I fixed this by adding in a boolean variable to be toggled by a paddle movement, and then only fire that paddle on the condition of that boolean. I have also added Invisible barriers to try to sandwich the paddles to a specific range, and am working on collision filtering to make this approach work well.
+
+## Future Implements
+
+I plan to add several bonus scoring features in the future, more accurate collision detection, and cleaner graphics and animations on the game.
 
 ## Functionality & MVPS
 
