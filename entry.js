@@ -54,7 +54,6 @@ import Matter from 'Matter-js';
     engine.world.bodies[22].collisionFilter = { group: bufferGroup };
     engine.world.bodies[23].collisionFilter = { group: bufferGroup };
     engine.world.bodies[24].collisionFilter = { group: bufferGroup };
-    console.log(engine.world.bodies);
     // engine.world.bodies[17].collisionFilter = { group: -1 };
     // engine.world.bodies[19].collisionFilter = { group: -1 };
     Engine.run(engine);
@@ -106,7 +105,6 @@ import Matter from 'Matter-js';
       }, 500);
     }
     Matter.Events.on(engine, 'collisionStart', function(event) {
-      console.log(event.pairs);
       if (event.pairs.bodyA === engine.world.bodies[0] ||
       event.pairs.bodyA === engine.world.bodies[1] ||
       event.pairs.bodyA === engine.world.bodies[2]) {

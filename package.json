@@ -27,6 +27,8 @@
     "webpack": "^2.3.3"
   },
   "babel": {
-    "presets": ["es2015"]
+    "presets": [
+      "es2015"
+    ]
   }
 }
