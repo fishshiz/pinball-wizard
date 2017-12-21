@@ -132,24 +132,24 @@ import Matter from 'Matter-js';
     var leftFired = false;
     var rightFired = false;
 
-    document.addEventListener("keydown", function keDown(e) {
+    document.addEventListener("keydown", function keyDown(e) {
       let keyCode = e.keyCode;
       if (keyCode === 37 && leftFired === false) {
         leftFired = true;
-        Matter.Body.setAngularVelocity(engine.world.bodies[17], -2);
+        // Matter.Body.setAngularVelocity(engine.world.bodies[17], -2);
       } else if (keyCode === 39  && rightFired === false) {
         rightFired = true;
-        Matter.Body.setAngularVelocity(engine.world.bodies[19], 2);
+        // Matter.Body.setAngularVelocity(engine.world.bodies[19], 2);
       }
     });
-    document.addEventListener("keyup", function keUp(e) {
+    document.addEventListener("keyup", function keyUp(e) {
       let keyCode = e.keyCode;
       if (keyCode === 37 ) {
         leftFired = false;
-        engine.world.bodies[17].isSleeping = true;
+        // engine.world.bodies[17].isSleeping = true;
       } else if (keyCode === 39) {
         rightFired = false;
-        engine.world.bodies[19].isSleeping = true;
+        // engine.world.bodies[19].isSleeping = true;
       }
       if (ballCount > 0) {
         launch();
