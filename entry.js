@@ -37,7 +37,7 @@ import Matter from 'Matter-js';
     ballCount = 3;
     document.getElementById('ball-count').innerHTML = ballCount;
     world = engine.world;
-    world.gravity.y = 0.75;
+    world.gravity.y = 0.95;
     const board = [circles(), walls(), innerWalls(), bumpers(), paddles(), thorns()];
     World.add(engine.world, board.reduce((prev, curr) => {
       return prev.concat(curr);
@@ -105,13 +105,20 @@ import Matter from 'Matter-js';
       }, 500);
     }
     Matter.Events.on(engine, 'collisionStart', function(event) {
-      if (event.pairs.bodyA === engine.world.bodies[0] ||
-      event.pairs.bodyA === engine.world.bodies[1] ||
-      event.pairs.bodyA === engine.world.bodies[2]) {
+      let body;
+      console.log("Evento: ", event)
+     var pairs = event.pairs;
+     console.log("Pair no visible: ", pairs);
+     console.log("Pair visible: ", pairs[0]);
+     console.log("colision between " + pairs[0].bodyA.label + " - " + pairs[0].bodyB.label);
+      if (event.pairs[0].bodyA === engine.world.bodies[0] ||
+      event.pairs[0].bodyA === engine.world.bodies[1] ||
+      event.pairs[0].bodyA === engine.world.bodies[2]) {
       updateScore(10);
-      event.pairs.bodyA.render.fillStyle = 'rgb(176, 145, 80)';
+      body = event.pairs[0].bodyA.render
+      body.fillStyle = 'rgb(176, 145, 80)';
       setTimeout(function() {
-        event.pairs.bodyA.render.fillStyle = 'rgb(230, 149, 42)';}, 100);
+        body.fillStyle = 'rgb(230, 149, 42)';}, 100);
       } else if (event.pairs.bodyA === engine.world.bodies[15] ||
       event.pairs.bodyA === engine.world.bodies[16]) {
         updateScore(5);
@@ -120,6 +127,7 @@ import Matter from 'Matter-js';
   }
 
   function updateScore(points) {
+    console.log("YO")
     score += points;
     document.getElementById('score').innerHTML = score;
     if (score > highScore) {
@@ -136,17 +144,17 @@ import Matter from 'Matter-js';
       let keyCode = e.keyCode;
       if (keyCode === 37 && leftFired === false) {
         leftFired = true;
-        // Matter.Body.setAngularVelocity(engine.world.bodies[17], -2);
+        Matter.Body.setAngularVelocity(engine.world.bodies[17], -2);
       } else if (keyCode === 39  && rightFired === false) {
         rightFired = true;
-        // Matter.Body.setAngularVelocity(engine.world.bodies[19], 2);
+        Matter.Body.setAngularVelocity(engine.world.bodies[19], 2);
       }
     });
     document.addEventListener("keyup", function keyUp(e) {
       let keyCode = e.keyCode;
       if (keyCode === 37 ) {
         leftFired = false;
-        // engine.world.bodies[17].isSleeping = true;
+        // engine.world.bodies[17].isSleeping = false;
       } else if (keyCode === 39) {
         rightFired = false;
         // engine.world.bodies[19].isSleeping = true;

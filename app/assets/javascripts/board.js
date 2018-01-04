@@ -6,7 +6,7 @@ import Matter from 'Matter-js';
 
   const COLORS = {
     WALLS: 'rgb(71, 156, 66)',
-    INNERWALLS: 'rgb(249, 50, 211)',
+    INNERWALLS: 'rgb(19, 130, 121)',
     BUMPERS: 'rgb(169, 210, 240)',
     BUMPERHIT: 'rgb(91, 158, 113)',
     ORBS: 'rgb(230, 149, 42)',

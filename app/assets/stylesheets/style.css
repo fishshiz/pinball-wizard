@@ -32,11 +32,15 @@ a {
 .scorers-table {
   height: 650px;
   width: 300px;
-  background-color: rgb(33, 100, 53);
+  background-color: transparent;
   color: rgb(147, 231, 156);
   font-family: sans-serif;
   font-size: 25px;
-  top: 0
+  top: 0;
+  margin-left: 25px;
+  border-radius: 8px;
+  border: 2px solid white;
+  box-shadow: 0 2px 12px -5px rgba(0,0,0,.1);
 }
 
 html {
@@ -54,9 +58,16 @@ html {
 }
 
 .instructions {
-  padding: 18px;
+  padding: 10px;
 }
 
 canvas {
   border-radius: 8px;
+  box-shadow: 0 2px 12px -5px rgba(0,0,0,.1);
+  border: 2px solid white;
+
+}
+
+.stats-div {
+  padding: 10px;
 }
