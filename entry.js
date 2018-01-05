@@ -49,7 +49,7 @@ import Matter from 'Matter-js';
     document.getElementById('high-score').innerHTML = highScore;
     inPlay = false;
 
-    // engine.world.bodies.filter(findPinball).collisionFilter = { group: bufferGroup };
+    engine.world.bodies.filter(findPinball).collisionFilter = { group: bufferGroup };
     engine.world.bodies[21].collisionFilter = { group: bufferGroup };
     engine.world.bodies[22].collisionFilter = { group: bufferGroup };
     engine.world.bodies[23].collisionFilter = { group: bufferGroup };
@@ -60,21 +60,23 @@ import Matter from 'Matter-js';
     Render.run(render);
   }
 
+  function launchAction(e) {
+    let keyCode = e.keyCode;
+    if ((inPlay === false && keyCode === 38 && ballCount > 0) ||
+    (inPlay === false && keyCode === 32 && ballCount > 0)) {
+      let pinball = createBall();
+      pinball.label = 'pinball';
+      World.add(engine.world, pinball);
+      Matter.Body.setPosition(pinball, { x: 500, y: 650 });
+      Matter.Body.setVelocity(pinball, {x: 0, y: (Math.floor(Math.random() * -35) - 25) });
+      inPlay = true;
+    }
+  }
 
   function launch() {
 
     window.addEventListener("keydown", function keyDown(e) {
-      let keyCode = e.keyCode;
-      if ((inPlay === false && keyCode === 38 && ballCount > 0) ||
-      (inPlay === false && keyCode === 32 && ballCount > 0)) {
-        let pinball = createBall();
-        pinball.label = 'pinball';
-        World.add(engine.world, pinball);
-        Matter.Body.setPosition(pinball, { x: 500, y: 650 });
-        Matter.Body.setVelocity(pinball, {x: 0, y: (Math.floor(Math.random() * -35) - 25) });
-        inPlay = true;
-
-      }
+      launchAction(e);
     }
   );
   }
@@ -106,28 +108,31 @@ import Matter from 'Matter-js';
     }
     Matter.Events.on(engine, 'collisionStart', function(event) {
       let body;
-      console.log("Evento: ", event)
+      let ballVelocity;
+
      var pairs = event.pairs;
-     console.log("Pair no visible: ", pairs);
-     console.log("Pair visible: ", pairs[0]);
-     console.log("colision between " + pairs[0].bodyA.label + " - " + pairs[0].bodyB.label);
+      ballVelocity = event.pairs[0].bodyB.velocity
+      let xVelocity = (ballVelocity.x) * (-1.1);
+      let yVelocity = (ballVelocity.y) * (-1.1);
       if (event.pairs[0].bodyA === engine.world.bodies[0] ||
       event.pairs[0].bodyA === engine.world.bodies[1] ||
       event.pairs[0].bodyA === engine.world.bodies[2]) {
       updateScore(10);
+      
+      Matter.Body.setVelocity(event.pairs[0].bodyB, {x: xVelocity, y: yVelocity});
       body = event.pairs[0].bodyA.render
       body.fillStyle = 'rgb(176, 145, 80)';
       setTimeout(function() {
         body.fillStyle = 'rgb(230, 149, 42)';}, 100);
-      } else if (event.pairs.bodyA === engine.world.bodies[15] ||
-      event.pairs.bodyA === engine.world.bodies[16]) {
+      } else if (event.pairs[0].bodyA.label === 'leftLaunchPad') {
         updateScore(5);
+        Matter.Body.setVelocity(event.pairs[0].bodyB, {x: xVelocity, y: yVelocity});
+
       }
     });
   }
 
   function updateScore(points) {
-    console.log("YO")
     score += points;
     document.getElementById('score').innerHTML = score;
     if (score > highScore) {
@@ -136,42 +141,76 @@ import Matter from 'Matter-js';
     }
   }
 
-  function paddleCommands() {
+  function firePaddle(e) {
     var leftFired = false;
     var rightFired = false;
+    let keyCode = e.keyCode;
+    if (keyCode === 37 && leftFired === false) {
+      leftFired = true;
+      Matter.Body.setAngularVelocity(engine.world.bodies[17], -2);
+    } else if (keyCode === 39  && rightFired === false) {
+      rightFired = true;
+      Matter.Body.setAngularVelocity(engine.world.bodies[19], 2);
+    }
+  }
+
+  function releasePaddle(e) {
+    var leftFired = false;
+    var rightFired = false;
+    let keyCode = e.keyCode;
+    if (keyCode === 37 ) {
+      leftFired = false;
+      // engine.world.bodies[17].isSleeping = false;
+    } else if (keyCode === 39) {
+      rightFired = false;
+      // engine.world.bodies[19].isSleeping = true;
+    }
+    if (ballCount > 0) {
+      launch();
+      if (listening === false) {
+        ballOut();
+      }
+    } else {
+      newGame();
+    }
+  }
+
+  function paddleCommands() {
+  
 
     document.addEventListener("keydown", function keyDown(e) {
-      let keyCode = e.keyCode;
-      if (keyCode === 37 && leftFired === false) {
-        leftFired = true;
-        Matter.Body.setAngularVelocity(engine.world.bodies[17], -2);
-      } else if (keyCode === 39  && rightFired === false) {
-        rightFired = true;
-        Matter.Body.setAngularVelocity(engine.world.bodies[19], 2);
-      }
+      firePaddle(e);
     });
     document.addEventListener("keyup", function keyUp(e) {
-      let keyCode = e.keyCode;
-      if (keyCode === 37 ) {
-        leftFired = false;
-        // engine.world.bodies[17].isSleeping = false;
-      } else if (keyCode === 39) {
-        rightFired = false;
-        // engine.world.bodies[19].isSleeping = true;
-      }
-      if (ballCount > 0) {
-        launch();
-        if (listening === false) {
-          ballOut();
-        }
-      }
+      releasePaddle(e);
     }
   );
+}
+
+function newGame() {
+  if(ballCount === 0 ) {
+    resetGlobalVariables();
+    window.removeEventListener("keydown", function keyDown(e) {
+      launchAction(e);
+    });
+    document.removeEventListener("keydown", function keyDown(e) {
+      firePaddle(e);
+    });
+    document.removeEventListener("keyup", function keyUp(e) {
+      releasePaddle(e);
+    });
+    document.getElementById('ball-count').innerHTML = ballCount;
+    document.getElementById('score').innerHTML = score;
+  }
+}
+
+function resetGlobalVariables() {
+  score = 0;
+  ballCount = 3;
 }
 
   document.addEventListener("DOMContentLoaded", function(){
 
     setup();
     paddleCommands();
-
   });
