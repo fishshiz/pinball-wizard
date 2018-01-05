@@ -116,10 +116,10 @@ import Matter from 'Matter-js';
           ballCount -= 1;
           document.getElementById('ball-count').innerHTML = ballCount;
           listening = false;
-        } else if (pinball[0].position.y < 200 && hatchUp === false) {
+        } else if (pinball[0].position.x < 490 && hatchUp === false) {
           closeHatch();
         }
-      }, 500);
+      }, 250);
     }
     Matter.Events.on(engine, 'collisionStart', function(event) {
       let body;
@@ -132,8 +132,8 @@ import Matter from 'Matter-js';
       if (event.pairs[0].bodyA === engine.world.bodies[0] ||
       event.pairs[0].bodyA === engine.world.bodies[1] ||
       event.pairs[0].bodyA === engine.world.bodies[2]) {
+        console.log('collision')
       updateScore(10);
-      
       Matter.Body.setVelocity(event.pairs[0].bodyB, {x: xVelocity, y: yVelocity});
       body = event.pairs[0].bodyA.render
       body.fillStyle = 'rgb(176, 145, 80)';
@@ -156,9 +156,7 @@ import Matter from 'Matter-js';
     }
   }
 
-  function firePaddle(e) {
-    var leftFired = false;
-    var rightFired = false;
+  function firePaddle(e, leftFired, rightFired) {
     let keyCode = e.keyCode;
     if (keyCode === 37 && leftFired === false) {
       leftFired = true;
@@ -169,9 +167,7 @@ import Matter from 'Matter-js';
     }
   }
 
-  function releasePaddle(e) {
-    var leftFired = false;
-    var rightFired = false;
+  function releasePaddle(e, leftFired, rightFired) {
     let keyCode = e.keyCode;
     if (keyCode === 37 ) {
       leftFired = false;
@@ -191,13 +187,14 @@ import Matter from 'Matter-js';
   }
 
   function paddleCommands() {
-  
+    var leftFired = false;
+    var rightFired = false;
 
     document.addEventListener("keydown", function keyDown(e) {
-      firePaddle(e);
+      firePaddle(e, leftFired, rightFired);
     });
     document.addEventListener("keyup", function keyUp(e) {
-      releasePaddle(e);
+      releasePaddle(e, leftFired, rightFired);
     }
   );
 }
@@ -215,7 +212,7 @@ function newGame() {
       releasePaddle(e);
     });
     document.getElementById('ball-count').innerHTML = ballCount;
-    document.getElementById('score').innerHTML = score;
+    updateScore(0);
   }
 }
 
