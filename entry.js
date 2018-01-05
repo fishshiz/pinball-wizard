@@ -1,4 +1,4 @@
-import { circles, walls, innerWalls, bumpers, paddles, thorns } from './app/assets/javascripts/board';
+import { circles, walls, innerWalls, bumpers, paddles, thorns, ballHatch } from './app/assets/javascripts/board';
 // import { launch } from './app/assets/javascripts/game';
 // import { createBall, launch } from './app/assets/javascripts/ball';
 import Matter from 'Matter-js';
@@ -10,6 +10,7 @@ import Matter from 'Matter-js';
   Constraint = Matter.Constraint;
 
   let engine;
+  let hatchUp = true;
   let world;
   let score;
   let inPlay;
@@ -38,7 +39,7 @@ import Matter from 'Matter-js';
     document.getElementById('ball-count').innerHTML = ballCount;
     world = engine.world;
     world.gravity.y = 0.95;
-    const board = [circles(), walls(), innerWalls(), bumpers(), paddles(), thorns()];
+    const board = [circles(), walls(), innerWalls(), bumpers(), paddles(), thorns(), ballHatch()];
     World.add(engine.world, board.reduce((prev, curr) => {
       return prev.concat(curr);
     }));
@@ -60,10 +61,23 @@ import Matter from 'Matter-js';
     Render.run(render);
   }
 
+  function openHatch() {
+    let hatch = engine.world.bodies[27];
+    Matter.Body.translate(hatch, { x: 0, y: 100 });
+    hatchUp = false;
+  }
+
+  function closeHatch() {
+    let hatch = engine.world.bodies[27];
+    Matter.Body.translate(hatch, { x: 0, y: -100 });
+    hatchUp = true;
+  }
+
   function launchAction(e) {
     let keyCode = e.keyCode;
     if ((inPlay === false && keyCode === 38 && ballCount > 0) ||
     (inPlay === false && keyCode === 32 && ballCount > 0)) {
+      openHatch();
       let pinball = createBall();
       pinball.label = 'pinball';
       World.add(engine.world, pinball);
@@ -74,7 +88,6 @@ import Matter from 'Matter-js';
   }
 
   function launch() {
-
     window.addEventListener("keydown", function keyDown(e) {
       launchAction(e);
     }
@@ -103,6 +116,8 @@ import Matter from 'Matter-js';
           ballCount -= 1;
           document.getElementById('ball-count').innerHTML = ballCount;
           listening = false;
+        } else if (pinball[0].position.y < 200 && hatchUp === false) {
+          closeHatch();
         }
       }, 500);
     }

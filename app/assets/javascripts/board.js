@@ -58,6 +58,12 @@ import Matter from 'Matter-js';
     return [leftThorn, rightThorn];
   };
 
+  export const ballHatch = function ballHatch() {
+    let hatch = Bodies.rectangle(490, 210, 130, 20, { label: 'hatch', angle: (Math.PI)/2, chamfer: { radius: 10 }, isStatic: true, render: { fillStyle: COLORS.WALLS }});
+
+    return [hatch];
+  };
+
   export const paddles = function paddles() {
     let leftPaddle = Bodies.trapezoid(190, 540, 20, 70, 0.25, { label: 'leftPaddle', angle: (2 * Math.PI)/3, chamfer: { radius: 10 }, render: { fillStyle: COLORS.PADDLE }});
    let leftHinge = Bodies.circle(172, 529, 5, { isStatic: true});

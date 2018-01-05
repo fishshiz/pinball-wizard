@@ -10418,7 +10418,7 @@ var Vector = _dereq_('../geometry/Vector');
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.paddles = exports.thorns = exports.bumpers = exports.innerWalls = exports.walls = exports.circles = undefined;
+exports.paddles = exports.ballHatch = exports.thorns = exports.bumpers = exports.innerWalls = exports.walls = exports.circles = undefined;
 
 var _MatterJs = __webpack_require__(0);
 
@@ -10484,6 +10484,12 @@ var thorns = exports.thorns = function thorns() {
   return [leftThorn, rightThorn];
 };
 
+var ballHatch = exports.ballHatch = function ballHatch() {
+  var hatch = Bodies.rectangle(490, 210, 130, 20, { label: 'hatch', angle: Math.PI / 2, chamfer: { radius: 10 }, isStatic: true, render: { fillStyle: COLORS.WALLS } });
+
+  return [hatch];
+};
+
 var paddles = exports.paddles = function paddles() {
   var leftPaddle = Bodies.trapezoid(190, 540, 20, 70, 0.25, { label: 'leftPaddle', angle: 2 * Math.PI / 3, chamfer: { radius: 10 }, render: { fillStyle: COLORS.PADDLE } });
   var leftHinge = Bodies.circle(172, 529, 5, { isStatic: true });
@@ -10524,6 +10530,7 @@ var Engine = _MatterJs2.default.Engine,
 
 
 var engine = void 0;
+var hatchUp = true;
 var world = void 0;
 var score = void 0;
 var inPlay = void 0;
@@ -10552,7 +10559,7 @@ function setup() {
   document.getElementById('ball-count').innerHTML = ballCount;
   world = engine.world;
   world.gravity.y = 0.95;
-  var board = [(0, _board.circles)(), (0, _board.walls)(), (0, _board.innerWalls)(), (0, _board.bumpers)(), (0, _board.paddles)(), (0, _board.thorns)()];
+  var board = [(0, _board.circles)(), (0, _board.walls)(), (0, _board.innerWalls)(), (0, _board.bumpers)(), (0, _board.paddles)(), (0, _board.thorns)(), (0, _board.ballHatch)()];
   World.add(engine.world, board.reduce(function (prev, curr) {
     return prev.concat(curr);
   }));
@@ -10573,9 +10580,22 @@ function setup() {
   Render.run(render);
 }
 
+function openHatch() {
+  var hatch = engine.world.bodies[27];
+  _MatterJs2.default.Body.translate(hatch, { x: 0, y: 100 });
+  hatchUp = false;
+}
+
+function closeHatch() {
+  var hatch = engine.world.bodies[27];
+  _MatterJs2.default.Body.translate(hatch, { x: 0, y: -100 });
+  hatchUp = true;
+}
+
 function launchAction(e) {
   var keyCode = e.keyCode;
   if (inPlay === false && keyCode === 38 && ballCount > 0 || inPlay === false && keyCode === 32 && ballCount > 0) {
+    openHatch();
     var pinball = createBall();
     pinball.label = 'pinball';
     World.add(engine.world, pinball);
@@ -10586,7 +10606,6 @@ function launchAction(e) {
 }
 
 function launch() {
-
   window.addEventListener("keydown", function keyDown(e) {
     launchAction(e);
   });
@@ -10614,6 +10633,8 @@ function ballOut() {
         ballCount -= 1;
         document.getElementById('ball-count').innerHTML = ballCount;
         listening = false;
+      } else if (pinball[0].position.y < 200 && hatchUp === false) {
+        closeHatch();
       }
     }, 500);
   }
