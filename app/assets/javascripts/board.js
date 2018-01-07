@@ -46,6 +46,7 @@ import Matter from 'Matter-js';
 
   export const bumpers = function bumpers() {
     let leftBumper = Bodies.trapezoid(150, 400, 40, 100, 0.5, { isStatic: true, angle: 5.58505, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
+    let leftLaunchPad = Bodies.rectangle(150, 400, 20, 100, { isStatic: true, angle: 0.698132, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
     let rightBumper = Bodies.trapezoid(340, 400, 40, 100, 0.5, { isStatic: true, angle: 0.698132, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
 
     return [leftBumper, rightBumper];

@@ -10472,6 +10472,7 @@ var innerWalls = exports.innerWalls = function innerWalls() {
 
 var bumpers = exports.bumpers = function bumpers() {
   var leftBumper = Bodies.trapezoid(150, 400, 40, 100, 0.5, { isStatic: true, angle: 5.58505, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
+  var leftLaunchPad = Bodies.rectangle(150, 400, 20, 100, { isStatic: true, angle: 0.698132, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
   var rightBumper = Bodies.trapezoid(340, 400, 40, 100, 0.5, { isStatic: true, angle: 0.698132, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
 
   return [leftBumper, rightBumper];
