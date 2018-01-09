@@ -51,10 +51,10 @@ import Matter from 'Matter-js';
     inPlay = false;
 
     engine.world.bodies.filter(findPinball).collisionFilter = { group: bufferGroup };
-    engine.world.bodies[21].collisionFilter = { group: bufferGroup };
-    engine.world.bodies[22].collisionFilter = { group: bufferGroup };
-    engine.world.bodies[23].collisionFilter = { group: bufferGroup };
-    engine.world.bodies[24].collisionFilter = { group: bufferGroup };
+    let buffers = engine.world.bodies.filter(body => body.label === 'buffer');
+    for (let buffer of buffers) {
+      buffer.collisionFilter = { group: bufferGroup };
+    }
     // engine.world.bodies[17].collisionFilter = { group: -1 };
     // engine.world.bodies[19].collisionFilter = { group: -1 };
     Engine.run(engine);
@@ -62,13 +62,13 @@ import Matter from 'Matter-js';
   }
 
   function openHatch() {
-    let hatch = engine.world.bodies[27];
+    let hatch = engine.world.bodies.filter(body => body.label === 'hatch')[0];
     Matter.Body.translate(hatch, { x: 0, y: 100 });
     hatchUp = false;
   }
 
   function closeHatch() {
-    let hatch = engine.world.bodies[27];
+    let hatch = engine.world.bodies.filter(body => body.label === 'hatch')[0];;
     Matter.Body.translate(hatch, { x: 0, y: -100 });
     hatchUp = true;
   }
@@ -129,10 +129,7 @@ import Matter from 'Matter-js';
       ballVelocity = event.pairs[0].bodyB.velocity
       let xVelocity = (ballVelocity.x) * (-1.1);
       let yVelocity = (ballVelocity.y) * (-1.1);
-      if (event.pairs[0].bodyA === engine.world.bodies[0] ||
-      event.pairs[0].bodyA === engine.world.bodies[1] ||
-      event.pairs[0].bodyA === engine.world.bodies[2]) {
-        console.log('collision')
+      if (event.pairs[0].bodyA.label === 'topCircle') {
       updateScore(10);
       Matter.Body.setVelocity(event.pairs[0].bodyB, {x: xVelocity, y: yVelocity});
       body = event.pairs[0].bodyA.render

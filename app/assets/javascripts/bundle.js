@@ -10441,9 +10441,9 @@ var COLORS = {
 };
 
 var circles = exports.circles = function circles() {
-  var circle1 = Bodies.circle(235, 120, 30, { isStatic: true, render: { fillStyle: COLORS.ORBS } });
-  var circle2 = Bodies.circle(146, 200, 30, { isStatic: true, render: { fillStyle: COLORS.ORBS } });
-  var circle3 = Bodies.circle(323, 200, 30, { isStatic: true, render: { fillStyle: COLORS.ORBS } });
+  var circle1 = Bodies.circle(235, 120, 30, { label: 'topCircle', isStatic: true, render: { fillStyle: COLORS.ORBS } });
+  var circle2 = Bodies.circle(146, 200, 30, { label: 'topCircle', isStatic: true, render: { fillStyle: COLORS.ORBS } });
+  var circle3 = Bodies.circle(323, 200, 30, { label: 'topCircle', isStatic: true, render: { fillStyle: COLORS.ORBS } });
 
   return [circle1, circle2, circle3];
 };
@@ -10498,10 +10498,10 @@ var paddles = exports.paddles = function paddles() {
   var rightPaddle = Bodies.trapezoid(300, 540, 20, 70, 0.25, { label: 'rightPaddle', angle: 4 * Math.PI / 3, chamfer: { radius: 10 }, render: { fillStyle: COLORS.PADDLE } });
   var rightHinge = Bodies.circle(318, 529, 5, { isStatic: true });
   var rightConstraint = Constraint.create({ bodyA: rightPaddle, bodyB: rightHinge, pointA: { x: 18, y: -11 }, stiffness: 0, length: 0 });
-  var leftBuffer = Bodies.circle(190, 605, 50, { isStatic: true, render: { visible: false } });
-  var leftTopBuffer = Bodies.circle(190, 450, 50, { isStatic: true, render: { visible: false } });
-  var rightBuffer = Bodies.circle(300, 605, 50, { isStatic: true, render: { visible: false } });
-  var rightTopBuffer = Bodies.circle(300, 450, 50, { isStatic: true, render: { visible: false } });
+  var leftBuffer = Bodies.circle(190, 605, 50, { label: 'buffer', isStatic: true, render: { visible: false } });
+  var leftTopBuffer = Bodies.circle(190, 450, 50, { label: 'buffer', isStatic: true, render: { visible: false } });
+  var rightBuffer = Bodies.circle(300, 605, 50, { label: 'buffer', isStatic: true, render: { visible: false } });
+  var rightTopBuffer = Bodies.circle(300, 450, 50, { label: 'buffer', isStatic: true, render: { visible: false } });
 
   return [leftPaddle, leftHinge, leftConstraint, rightPaddle, rightHinge, rightConstraint, leftBuffer, rightBuffer, leftTopBuffer, rightTopBuffer];
 };
@@ -10571,24 +10571,52 @@ function setup() {
   inPlay = false;
 
   engine.world.bodies.filter(findPinball).collisionFilter = { group: bufferGroup };
-  engine.world.bodies[21].collisionFilter = { group: bufferGroup };
-  engine.world.bodies[22].collisionFilter = { group: bufferGroup };
-  engine.world.bodies[23].collisionFilter = { group: bufferGroup };
-  engine.world.bodies[24].collisionFilter = { group: bufferGroup };
-  // engine.world.bodies[17].collisionFilter = { group: -1 };
-  // engine.world.bodies[19].collisionFilter = { group: -1 };
+  var buffers = engine.world.bodies.filter(function (body) {
+    return body.label === 'buffer';
+  });
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = buffers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var buffer = _step.value;
+
+      buffer.collisionFilter = { group: bufferGroup };
+    }
+    // engine.world.bodies[17].collisionFilter = { group: -1 };
+    // engine.world.bodies[19].collisionFilter = { group: -1 };
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
   Engine.run(engine);
   Render.run(render);
 }
 
 function openHatch() {
-  var hatch = engine.world.bodies[27];
+  var hatch = engine.world.bodies.filter(function (body) {
+    return body.label === 'hatch';
+  })[0];
   _MatterJs2.default.Body.translate(hatch, { x: 0, y: 100 });
   hatchUp = false;
 }
 
 function closeHatch() {
-  var hatch = engine.world.bodies[27];
+  var hatch = engine.world.bodies.filter(function (body) {
+    return body.label === 'hatch';
+  })[0];;
   _MatterJs2.default.Body.translate(hatch, { x: 0, y: -100 });
   hatchUp = true;
 }
@@ -10647,8 +10675,7 @@ function ballOut() {
     ballVelocity = event.pairs[0].bodyB.velocity;
     var xVelocity = ballVelocity.x * -1.1;
     var yVelocity = ballVelocity.y * -1.1;
-    if (event.pairs[0].bodyA === engine.world.bodies[0] || event.pairs[0].bodyA === engine.world.bodies[1] || event.pairs[0].bodyA === engine.world.bodies[2]) {
-      console.log('collision');
+    if (event.pairs[0].bodyA.label === 'topCircle') {
       updateScore(10);
       _MatterJs2.default.Body.setVelocity(event.pairs[0].bodyB, { x: xVelocity, y: yVelocity });
       body = event.pairs[0].bodyA.render;

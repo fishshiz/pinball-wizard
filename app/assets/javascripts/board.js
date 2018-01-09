@@ -15,9 +15,9 @@ import Matter from 'Matter-js';
   };
 
   export const circles = function circles() {
-    let circle1 = Bodies.circle(235, 120, 30, { isStatic: true, render: { fillStyle: COLORS.ORBS } });
-    let circle2 = Bodies.circle(146, 200, 30, { isStatic: true, render: { fillStyle: COLORS.ORBS } });
-    let circle3 = Bodies.circle(323, 200, 30, { isStatic: true, render: { fillStyle: COLORS.ORBS } });
+    let circle1 = Bodies.circle(235, 120, 30, { label: 'topCircle', isStatic: true, render: { fillStyle: COLORS.ORBS } });
+    let circle2 = Bodies.circle(146, 200, 30, { label: 'topCircle', isStatic: true, render: { fillStyle: COLORS.ORBS } });
+    let circle3 = Bodies.circle(323, 200, 30, { label: 'topCircle', isStatic: true, render: { fillStyle: COLORS.ORBS } });
 
     return [circle1, circle2, circle3];
   };
@@ -72,10 +72,10 @@ import Matter from 'Matter-js';
    let rightPaddle = Bodies.trapezoid(300, 540, 20, 70, 0.25, { label: 'rightPaddle', angle: (4 * Math.PI)/3, chamfer: { radius: 10 }, render: { fillStyle: COLORS.PADDLE }});
    let rightHinge = Bodies.circle(318, 529, 5, { isStatic: true});
    let rightConstraint = Constraint.create({ bodyA: rightPaddle, bodyB: rightHinge, pointA: {x: 18, y: -11 }, stiffness: 0, length: 0 });
-   let leftBuffer = Bodies.circle(190, 605, 50, { isStatic: true, render: { visible: false }});
-   let leftTopBuffer = Bodies.circle(190, 450, 50, { isStatic: true, render: { visible: false }});
-   let rightBuffer = Bodies.circle(300, 605, 50, { isStatic: true, render: { visible: false }});
-   let rightTopBuffer = Bodies.circle(300, 450, 50, { isStatic: true, render: { visible: false }});
+   let leftBuffer = Bodies.circle(190, 605, 50, { label: 'buffer', isStatic: true, render: { visible: false }});
+   let leftTopBuffer = Bodies.circle(190, 450, 50, { label: 'buffer', isStatic: true, render: { visible: false }});
+   let rightBuffer = Bodies.circle(300, 605, 50, { label: 'buffer', isStatic: true, render: { visible: false }});
+   let rightTopBuffer = Bodies.circle(300, 450, 50, { label: 'buffer', isStatic: true, render: { visible: false }});
 
     return [leftPaddle, leftHinge, leftConstraint, rightPaddle, rightHinge, rightConstraint, leftBuffer, rightBuffer, leftTopBuffer, rightTopBuffer];
   };
