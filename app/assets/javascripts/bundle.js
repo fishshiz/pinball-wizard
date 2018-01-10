@@ -10472,10 +10472,11 @@ var innerWalls = exports.innerWalls = function innerWalls() {
 
 var bumpers = exports.bumpers = function bumpers() {
   var leftBumper = Bodies.trapezoid(150, 400, 40, 100, 0.5, { isStatic: true, angle: 5.58505, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
-  var leftLaunchPad = Bodies.rectangle(150, 400, 20, 100, { isStatic: true, angle: 0.698132, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
+  var leftLaunchPad = Bodies.rectangle(155, 386, 5, 95, { label: 'launchpad', isStatic: true, angle: 5.47805, chamfer: { radius: 2 }, render: { fillStyle: COLORS.BUMPERS } });
   var rightBumper = Bodies.trapezoid(340, 400, 40, 100, 0.5, { isStatic: true, angle: 0.698132, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
+  var rightLauchPad = Bodies.rectangle(335, 386, 5, 95, { label: 'launchpad', isStatic: true, angle: 0.810132, chamfer: { radius: 2 }, render: { fillStyle: COLORS.BUMPERS } });
 
-  return [leftBumper, rightBumper];
+  return [leftBumper, rightBumper, leftLaunchPad, rightLauchPad];
 };
 
 var thorns = exports.thorns = function thorns() {
@@ -10539,6 +10540,8 @@ var highScore = 0;
 var ballCount = void 0;
 var leftPaddleUp = void 0;
 var rightPaddleUp = void 0;
+var leftPaddle = void 0;
+var rightPaddle = void 0;
 var listening = false;
 var bufferGroup = _MatterJs2.default.Body.nextGroup(true);
 var paddleGroup = _MatterJs2.default.Body.nextGroup(true);
@@ -10564,6 +10567,12 @@ function setup() {
   World.add(engine.world, board.reduce(function (prev, curr) {
     return prev.concat(curr);
   }));
+  leftPaddle = engine.world.bodies.filter(function (body) {
+    return body.label === 'leftPaddle';
+  })[0];
+  rightPaddle = engine.world.bodies.filter(function (body) {
+    return body.label === 'rightPaddle';
+  })[0];
 
   score = 0;
   document.getElementById('score').innerHTML = score;
@@ -10616,7 +10625,7 @@ function openHatch() {
 function closeHatch() {
   var hatch = engine.world.bodies.filter(function (body) {
     return body.label === 'hatch';
-  })[0];;
+  })[0];
   _MatterJs2.default.Body.translate(hatch, { x: 0, y: -100 });
   hatchUp = true;
 }
@@ -10674,7 +10683,9 @@ function ballOut() {
     var pairs = event.pairs;
     ballVelocity = event.pairs[0].bodyB.velocity;
     var xVelocity = ballVelocity.x * -1.1;
+
     var yVelocity = ballVelocity.y * -1.1;
+
     if (event.pairs[0].bodyA.label === 'topCircle') {
       updateScore(10);
       _MatterJs2.default.Body.setVelocity(event.pairs[0].bodyB, { x: xVelocity, y: yVelocity });
@@ -10683,9 +10694,15 @@ function ballOut() {
       setTimeout(function () {
         body.fillStyle = 'rgb(230, 149, 42)';
       }, 100);
-    } else if (event.pairs[0].bodyA.label === 'leftLaunchPad') {
+    } else if (event.pairs[0].bodyA.label === 'launchpad') {
+      console.log('yp');
       updateScore(5);
       _MatterJs2.default.Body.setVelocity(event.pairs[0].bodyB, { x: xVelocity, y: yVelocity });
+      body = event.pairs[0].bodyA.render;
+      body.fillStyle = 'rgb(176, 145, 80)';
+      setTimeout(function () {
+        body.fillStyle = 'rgb(169, 210, 240)';
+      }, 100);
     }
   });
 }
@@ -10703,10 +10720,10 @@ function firePaddle(e, leftFired, rightFired) {
   var keyCode = e.keyCode;
   if (keyCode === 37 && leftFired === false) {
     leftFired = true;
-    _MatterJs2.default.Body.setAngularVelocity(engine.world.bodies[17], -2);
+    _MatterJs2.default.Body.setAngularVelocity(leftPaddle, -2);
   } else if (keyCode === 39 && rightFired === false) {
     rightFired = true;
-    _MatterJs2.default.Body.setAngularVelocity(engine.world.bodies[19], 2);
+    _MatterJs2.default.Body.setAngularVelocity(rightPaddle, 2);
   }
 }
 

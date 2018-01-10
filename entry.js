@@ -18,6 +18,8 @@ import Matter from 'Matter-js';
   let ballCount;
   let leftPaddleUp;
   let rightPaddleUp;
+  let leftPaddle
+  let rightPaddle;
   let listening = false;
   const bufferGroup = Matter.Body.nextGroup(true);
   const paddleGroup = Matter.Body.nextGroup(true);
@@ -43,6 +45,8 @@ import Matter from 'Matter-js';
     World.add(engine.world, board.reduce((prev, curr) => {
       return prev.concat(curr);
     }));
+    leftPaddle = engine.world.bodies.filter(body => body.label === 'leftPaddle')[0];
+    rightPaddle = engine.world.bodies.filter(body => body.label === 'rightPaddle')[0];
 
 
     score = 0;
@@ -68,7 +72,7 @@ import Matter from 'Matter-js';
   }
 
   function closeHatch() {
-    let hatch = engine.world.bodies.filter(body => body.label === 'hatch')[0];;
+    let hatch = engine.world.bodies.filter(body => body.label === 'hatch')[0];
     Matter.Body.translate(hatch, { x: 0, y: -100 });
     hatchUp = true;
   }
@@ -128,7 +132,9 @@ import Matter from 'Matter-js';
      var pairs = event.pairs;
       ballVelocity = event.pairs[0].bodyB.velocity
       let xVelocity = (ballVelocity.x) * (-1.1);
+
       let yVelocity = (ballVelocity.y) * (-1.1);
+
       if (event.pairs[0].bodyA.label === 'topCircle') {
       updateScore(10);
       Matter.Body.setVelocity(event.pairs[0].bodyB, {x: xVelocity, y: yVelocity});
@@ -136,10 +142,14 @@ import Matter from 'Matter-js';
       body.fillStyle = 'rgb(176, 145, 80)';
       setTimeout(function() {
         body.fillStyle = 'rgb(230, 149, 42)';}, 100);
-      } else if (event.pairs[0].bodyA.label === 'leftLaunchPad') {
+      } else if (event.pairs[0].bodyA.label === 'launchpad') {
+        console.log('yp');
         updateScore(5);
         Matter.Body.setVelocity(event.pairs[0].bodyB, {x: xVelocity, y: yVelocity});
-
+        body = event.pairs[0].bodyA.render
+        body.fillStyle = 'rgb(176, 145, 80)';
+        setTimeout(function() {
+          body.fillStyle = 'rgb(169, 210, 240)';}, 100);
       }
     });
   }
@@ -157,10 +167,10 @@ import Matter from 'Matter-js';
     let keyCode = e.keyCode;
     if (keyCode === 37 && leftFired === false) {
       leftFired = true;
-      Matter.Body.setAngularVelocity(engine.world.bodies[17], -2);
+      Matter.Body.setAngularVelocity(leftPaddle, -2);
     } else if (keyCode === 39  && rightFired === false) {
       rightFired = true;
-      Matter.Body.setAngularVelocity(engine.world.bodies[19], 2);
+      Matter.Body.setAngularVelocity(rightPaddle, 2);
     }
   }
 

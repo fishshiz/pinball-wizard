@@ -46,10 +46,11 @@ import Matter from 'Matter-js';
 
   export const bumpers = function bumpers() {
     let leftBumper = Bodies.trapezoid(150, 400, 40, 100, 0.5, { isStatic: true, angle: 5.58505, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
-    let leftLaunchPad = Bodies.rectangle(150, 400, 20, 100, { isStatic: true, angle: 0.698132, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
+    let leftLaunchPad = Bodies.rectangle(155, 386, 5, 95, { label: 'launchpad', isStatic: true, angle: 5.47805, chamfer: { radius: 2 }, render: { fillStyle: COLORS.BUMPERS } });
     let rightBumper = Bodies.trapezoid(340, 400, 40, 100, 0.5, { isStatic: true, angle: 0.698132, chamfer: { radius: 10 }, render: { fillStyle: COLORS.BUMPERS } });
+    let rightLauchPad = Bodies.rectangle(335, 386, 5, 95, { label: 'launchpad', isStatic: true, angle: 0.810132, chamfer: { radius: 2 }, render: { fillStyle: COLORS.BUMPERS } });
 
-    return [leftBumper, rightBumper];
+    return [leftBumper, rightBumper, leftLaunchPad, rightLauchPad];
   };
 
   export const thorns = function thorns() {
