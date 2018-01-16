@@ -138,6 +138,8 @@ import Matter from 'Matter-js';
       if (event.pairs[0].bodyA.label === 'topCircle') {
       updateScore(10);
       Matter.Body.setVelocity(event.pairs[0].bodyB, {x: xVelocity, y: yVelocity});
+      xVelocity = 0;
+      yVelocity = 0;
       body = event.pairs[0].bodyA.render
       body.fillStyle = 'rgb(176, 145, 80)';
       setTimeout(function() {
