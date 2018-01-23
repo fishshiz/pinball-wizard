@@ -18,10 +18,12 @@ import Matter from 'Matter-js';
   let ballCount;
   let leftPaddleUp;
   let rightPaddleUp;
-  let leftPaddle
+  let leftPaddle;
   let rightPaddle;
+  let leftFired = false;
+  let rightFired = false;
   let listening = false;
-  const bufferGroup = Matter.Body.nextGroup(true);
+  const bufferGroup = 1;
   const paddleGroup = Matter.Body.nextGroup(true);
 
   function setup() {
@@ -54,13 +56,15 @@ import Matter from 'Matter-js';
     document.getElementById('high-score').innerHTML = highScore;
     inPlay = false;
 
-    engine.world.bodies.filter(findPinball).collisionFilter = { group: bufferGroup };
+    // engine.world.bodies.filter(findPinball).collisionFilter = { group: bufferGroup };
     let buffers = engine.world.bodies.filter(body => body.label === 'buffer');
     for (let buffer of buffers) {
       buffer.collisionFilter = { group: bufferGroup };
+      console.log(buffer);
     }
-    // engine.world.bodies[17].collisionFilter = { group: -1 };
-    // engine.world.bodies[19].collisionFilter = { group: -1 };
+    leftPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 0x0002 };
+    rightPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 0x0002 };
+    console.log(rightPaddle.collisionFilter);
     Engine.run(engine);
     Render.run(render);
   }
@@ -83,6 +87,8 @@ import Matter from 'Matter-js';
     (inPlay === false && keyCode === 32 && ballCount > 0)) {
       openHatch();
       let pinball = createBall();
+      console.log(pinball.collisionFilter);
+      // pinball.collisionFilter = { group: bufferGroup };
       pinball.label = 'pinball';
       World.add(engine.world, pinball);
       Matter.Body.setPosition(pinball, { x: 500, y: 650 });
@@ -130,12 +136,16 @@ import Matter from 'Matter-js';
       let ballVelocity;
 
      var pairs = event.pairs;
+    //  console.log(event.pairs[0].bodyA);
       ballVelocity = event.pairs[0].bodyB.velocity
       let xVelocity = (ballVelocity.x) * (-1.1);
 
       let yVelocity = (ballVelocity.y) * (-1.1);
 
-      if (event.pairs[0].bodyA.label === 'topCircle') {
+    if(event.pairs[0].bodyB.id === 27 || event.pairs[0].bodyB.id === 29) {
+      // console.log(event.pairs[0].bodyA);
+      freezePaddle(event.pairs[0].bodyA);
+    } else if (event.pairs[0].bodyA.label === 'topCircle') {
       updateScore(10);
       Matter.Body.setVelocity(event.pairs[0].bodyB, {x: xVelocity, y: yVelocity});
       xVelocity = 0;
@@ -156,6 +166,12 @@ import Matter from 'Matter-js';
     });
   }
 
+  function freezePaddle(paddle) {
+    console.log(paddle.isSleeping);
+    Matter.Sleeping.set(paddle, true);
+    console.log(paddle.isSleeping);
+  }
+
   function updateScore(points) {
     score += points;
     document.getElementById('score').innerHTML = score;
@@ -165,25 +181,26 @@ import Matter from 'Matter-js';
     }
   }
 
-  function firePaddle(e, leftFired, rightFired) {
+  function firePaddle(e) {
     let keyCode = e.keyCode;
-    if (keyCode === 37 && leftFired === false) {
+    console.log('butt', leftPaddle.isSleeping);
+    if (keyCode === 37 && leftPaddle.isSleeping === false && leftFired === false) {
       leftFired = true;
-      Matter.Body.setAngularVelocity(leftPaddle, -2);
-    } else if (keyCode === 39  && rightFired === false) {
+      Matter.Body.setAngularVelocity(leftPaddle, -1);
+    } else if (keyCode === 39 && leftPaddle.isSleeping === false && rightFired === false) {
       rightFired = true;
-      Matter.Body.setAngularVelocity(rightPaddle, 2);
+      Matter.Body.setAngularVelocity(rightPaddle, 1);
     }
   }
 
-  function releasePaddle(e, leftFired, rightFired) {
+  function releasePaddle(e) {
     let keyCode = e.keyCode;
     if (keyCode === 37 ) {
       leftFired = false;
-      // engine.world.bodies[17].isSleeping = false;
+      
     } else if (keyCode === 39) {
       rightFired = false;
-      // engine.world.bodies[19].isSleeping = true;
+      
     }
     if (ballCount > 0) {
       launch();
@@ -196,14 +213,11 @@ import Matter from 'Matter-js';
   }
 
   function paddleCommands() {
-    var leftFired = false;
-    var rightFired = false;
-
     document.addEventListener("keydown", function keyDown(e) {
-      firePaddle(e, leftFired, rightFired);
+      firePaddle(e);
     });
     document.addEventListener("keyup", function keyUp(e) {
-      releasePaddle(e, leftFired, rightFired);
+      releasePaddle(e);
     }
   );
 }
