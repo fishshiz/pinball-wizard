@@ -10486,8 +10486,10 @@ var rightPaddle = void 0;
 var leftFired = false;
 var rightFired = false;
 var listening = false;
-var bufferGroup = 1;
-var paddleGroup = _MatterJs2.default.Body.nextGroup(true);
+var bufferGroup = _MatterJs2.default.Body.nextGroup(false);
+console.log('buffer', bufferGroup);
+var paddleGroup = _MatterJs2.default.Body.nextGroup(false);
+console.log('paddle', paddleGroup);
 
 function setup() {
   engine = Engine.create();
@@ -10552,8 +10554,8 @@ function setup() {
     }
   }
 
-  leftPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 0x0002 };
-  rightPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 0x0002 };
+  leftPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 2 };
+  rightPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 2 };
   console.log(rightPaddle.collisionFilter);
   Engine.run(engine);
   Render.run(render);
@@ -10580,8 +10582,8 @@ function launchAction(e) {
   if (inPlay === false && keyCode === 38 && ballCount > 0 || inPlay === false && keyCode === 32 && ballCount > 0) {
     openHatch();
     var pinball = createBall();
+    pinball.collisionFilter = { mask: 4294967295, category: 2, group: 0 };
     console.log(pinball.collisionFilter);
-    // pinball.collisionFilter = { group: bufferGroup };
     pinball.label = 'pinball';
     World.add(engine.world, pinball);
     _MatterJs2.default.Body.setPosition(pinball, { x: 500, y: 650 });
@@ -10681,7 +10683,7 @@ function firePaddle(e) {
   if (keyCode === 37 && leftPaddle.isSleeping === false && leftFired === false) {
     leftFired = true;
     _MatterJs2.default.Body.setAngularVelocity(leftPaddle, -1);
-  } else if (keyCode === 39 && leftPaddle.isSleeping === false && rightFired === false) {
+  } else if (keyCode === 39 && rightPaddle.isSleeping === false && rightFired === false) {
     rightFired = true;
     _MatterJs2.default.Body.setAngularVelocity(rightPaddle, 1);
   }
@@ -10691,8 +10693,10 @@ function releasePaddle(e) {
   var keyCode = e.keyCode;
   if (keyCode === 37) {
     leftFired = false;
+    leftPaddle.isSleeping = false;
   } else if (keyCode === 39) {
     rightFired = false;
+    rightPaddle.isSleeping = false;
   }
   if (ballCount > 0) {
     launch();

@@ -23,8 +23,10 @@ import Matter from 'Matter-js';
   let leftFired = false;
   let rightFired = false;
   let listening = false;
-  const bufferGroup = 1;
-  const paddleGroup = Matter.Body.nextGroup(true);
+  const bufferGroup = Matter.Body.nextGroup(false);
+  console.log('buffer', bufferGroup);
+  const paddleGroup = Matter.Body.nextGroup(false);
+  console.log('paddle', paddleGroup);
 
   function setup() {
     engine = Engine.create();
@@ -62,8 +64,8 @@ import Matter from 'Matter-js';
       buffer.collisionFilter = { group: bufferGroup };
       console.log(buffer);
     }
-    leftPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 0x0002 };
-    rightPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 0x0002 };
+    leftPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 2 };
+    rightPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 2 };
     console.log(rightPaddle.collisionFilter);
     Engine.run(engine);
     Render.run(render);
@@ -87,8 +89,8 @@ import Matter from 'Matter-js';
     (inPlay === false && keyCode === 32 && ballCount > 0)) {
       openHatch();
       let pinball = createBall();
+      pinball.collisionFilter = { mask: 4294967295, category: 2, group: 0 };
       console.log(pinball.collisionFilter);
-      // pinball.collisionFilter = { group: bufferGroup };
       pinball.label = 'pinball';
       World.add(engine.world, pinball);
       Matter.Body.setPosition(pinball, { x: 500, y: 650 });
@@ -187,7 +189,7 @@ import Matter from 'Matter-js';
     if (keyCode === 37 && leftPaddle.isSleeping === false && leftFired === false) {
       leftFired = true;
       Matter.Body.setAngularVelocity(leftPaddle, -1);
-    } else if (keyCode === 39 && leftPaddle.isSleeping === false && rightFired === false) {
+    } else if (keyCode === 39 && rightPaddle.isSleeping === false && rightFired === false) {
       rightFired = true;
       Matter.Body.setAngularVelocity(rightPaddle, 1);
     }
@@ -197,10 +199,10 @@ import Matter from 'Matter-js';
     let keyCode = e.keyCode;
     if (keyCode === 37 ) {
       leftFired = false;
-      
+      leftPaddle.isSleeping = false;
     } else if (keyCode === 39) {
       rightFired = false;
-      
+      rightPaddle.isSleeping = false;
     }
     if (ballCount > 0) {
       launch();
@@ -215,7 +217,8 @@ import Matter from 'Matter-js';
   function paddleCommands() {
     document.addEventListener("keydown", function keyDown(e) {
       firePaddle(e);
-    });
+    }
+  );
     document.addEventListener("keyup", function keyUp(e) {
       releasePaddle(e);
     }
