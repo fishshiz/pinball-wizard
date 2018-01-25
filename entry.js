@@ -1,6 +1,4 @@
 import { circles, walls, innerWalls, bumpers, paddles, thorns, ballHatch } from './app/assets/javascripts/board';
-// import { launch } from './app/assets/javascripts/game';
-// import { createBall, launch } from './app/assets/javascripts/ball';
 import Matter from 'Matter-js';
 
   let Engine = Matter.Engine,
@@ -121,7 +119,10 @@ import Matter from 'Matter-js';
           clearInterval(ballTracker);
           inPlay = false;
           ballCount -= 1;
-          document.getElementById('ball-count').innerHTML = ballCount;
+          let displayBallCount = document.getElementById('ball-count');
+          displayBallCount.classList.add('lose-ball');
+          displayBallCount.innerHTML = ballCount;
+          displayBallCount.addEventListener('transitionend', removeTransition);
           listening = false;
         } else if (pinball[0].position.x < 490 && hatchUp === false) {
           closeHatch();
@@ -133,26 +134,30 @@ import Matter from 'Matter-js';
       let ballVelocity;
 
      var pairs = event.pairs;
-      ballVelocity = event.pairs[0].bodyB.velocity
-      let xVelocity = (ballVelocity.x) * (-1.1);
+      ballVelocity = event.pairs[0].bodyB.velocity;
+      let maxVelocity = 50;
 
-      let yVelocity = (ballVelocity.y) * (-1.1);
+      // let yVelocity = (ballVelocity.y) * (-1.1);
 
     if(event.pairs[0].bodyB.id === 27 || event.pairs[0].bodyB.id === 29) {
       freezePaddle(event.pairs[0].bodyA);
     } else if (event.pairs[0].bodyA.label === 'topCircle') {
       updateScore(10);
-      Matter.Body.setVelocity(event.pairs[0].bodyB, {x: xVelocity, y: yVelocity});
-      xVelocity = 0;
-      yVelocity = 0;
-      body = event.pairs[0].bodyA.render
+      Matter.Body.setVelocity(event.pairs[0].bodyB, {
+				x: Math.max(Math.min(ballVelocity.x, maxVelocity), -maxVelocity),
+				y: Math.max(Math.min(ballVelocity.y, maxVelocity), -maxVelocity),
+			});
+      body = event.pairs[0].bodyA.render;
       body.fillStyle = 'rgb(176, 145, 80)';
       setTimeout(function() {
         body.fillStyle = 'rgb(230, 149, 42)';}, 100);
       } else if (event.pairs[0].bodyA.label === 'launchpad') {
         updateScore(5);
-        Matter.Body.setVelocity(event.pairs[0].bodyB, {x: xVelocity, y: yVelocity});
-        body = event.pairs[0].bodyA.render
+        Matter.Body.setVelocity(event.pairs[0].bodyB, {
+          x: Math.max(Math.min(ballVelocity.x, maxVelocity), -maxVelocity),
+          y: Math.max(Math.min(ballVelocity.y, maxVelocity), -maxVelocity),
+        });
+        body = event.pairs[0].bodyA.render;
         body.fillStyle = 'rgb(176, 145, 80)';
         setTimeout(function() {
           body.fillStyle = 'rgb(169, 210, 240)';}, 100);
@@ -166,11 +171,25 @@ import Matter from 'Matter-js';
 
   function updateScore(points) {
     score += points;
-    document.getElementById('score').innerHTML = score;
+    let displayScore = document.getElementById('score');
+    let displayHighScore = document.getElementById('high-score');
+    displayScore.classList.add('update');
+    
+    displayScore.innerHTML = score;
+    displayScore.addEventListener('transitionend', removeTransition);
+
     if (score > highScore) {
       highScore = score;
-      document.getElementById('high-score').innerHTML = highScore;
+      displayHighScore.classList.add('update');
+      displayHighScore.innerHTML = highScore;
+      displayHighScore.addEventListener('transitionend', removeTransition);
     }
+  }
+
+  function removeTransition(e) {
+    if (e.propertyName !== 'transform') return;
+    this.classList.remove('update');
+    this.classList.remove('lose-ball');
   }
 
   function firePaddle(e) {
@@ -226,6 +245,9 @@ function newGame() {
     document.removeEventListener("keyup", function keyUp(e) {
       releasePaddle(e);
     });
+    document.getElementById('score').removeEventListener('transitionend', removeTransition);
+    document.getElementById('high-score').removeEventListener('transitionend', removeTransition);
+    document.getElementById('ball-count').removeEventListener('transitionend', removeTransition);
     document.getElementById('ball-count').innerHTML = ballCount;
     updateScore(0);
   }
@@ -237,7 +259,6 @@ function resetGlobalVariables() {
 }
 
   document.addEventListener("DOMContentLoaded", function(){
-
     setup();
     paddleCommands();
   });

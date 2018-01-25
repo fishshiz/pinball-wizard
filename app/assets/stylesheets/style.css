@@ -52,6 +52,16 @@ html {
   justify-content: space-between;
 }
 
+.update {
+  transform: scale(1.1);
+  color: #ffc600;
+}
+
+.lose-ball {
+  transform: scale(1.1);
+  color: #af1d1d;
+}
+
 .score-nums {
   display: flex;
   justify-content: space-between;
@@ -70,4 +80,14 @@ canvas {
 
 .stats-div {
   padding: 10px;
+}
+
+#score {
+  transition: all .10s ease;
+}
+#high-score {
+  transition: all .10s ease;
+}
+#ball-count {
+  transition: all .10s ease;
 }

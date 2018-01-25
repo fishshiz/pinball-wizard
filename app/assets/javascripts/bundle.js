@@ -10474,9 +10474,6 @@ var Engine = _MatterJs2.default.Engine,
     World = _MatterJs2.default.World,
     Bodies = _MatterJs2.default.Bodies,
     Constraint = _MatterJs2.default.Constraint;
-// import { launch } from './app/assets/javascripts/game';
-// import { createBall, launch } from './app/assets/javascripts/ball';
-
 
 var engine = void 0;
 var hatchUp = true;
@@ -10619,7 +10616,10 @@ function ballOut() {
         clearInterval(ballTracker);
         inPlay = false;
         ballCount -= 1;
-        document.getElementById('ball-count').innerHTML = ballCount;
+        var displayBallCount = document.getElementById('ball-count');
+        displayBallCount.classList.add('lose-ball');
+        displayBallCount.innerHTML = ballCount;
+        displayBallCount.addEventListener('transitionend', removeTransition);
         listening = false;
       } else if (pinball[0].position.x < 490 && hatchUp === false) {
         closeHatch();
@@ -10632,17 +10632,18 @@ function ballOut() {
 
     var pairs = event.pairs;
     ballVelocity = event.pairs[0].bodyB.velocity;
-    var xVelocity = ballVelocity.x * -1.1;
+    var maxVelocity = 50;
 
-    var yVelocity = ballVelocity.y * -1.1;
+    // let yVelocity = (ballVelocity.y) * (-1.1);
 
     if (event.pairs[0].bodyB.id === 27 || event.pairs[0].bodyB.id === 29) {
       freezePaddle(event.pairs[0].bodyA);
     } else if (event.pairs[0].bodyA.label === 'topCircle') {
       updateScore(10);
-      _MatterJs2.default.Body.setVelocity(event.pairs[0].bodyB, { x: xVelocity, y: yVelocity });
-      xVelocity = 0;
-      yVelocity = 0;
+      _MatterJs2.default.Body.setVelocity(event.pairs[0].bodyB, {
+        x: Math.max(Math.min(ballVelocity.x, maxVelocity), -maxVelocity),
+        y: Math.max(Math.min(ballVelocity.y, maxVelocity), -maxVelocity)
+      });
       body = event.pairs[0].bodyA.render;
       body.fillStyle = 'rgb(176, 145, 80)';
       setTimeout(function () {
@@ -10650,7 +10651,10 @@ function ballOut() {
       }, 100);
     } else if (event.pairs[0].bodyA.label === 'launchpad') {
       updateScore(5);
-      _MatterJs2.default.Body.setVelocity(event.pairs[0].bodyB, { x: xVelocity, y: yVelocity });
+      _MatterJs2.default.Body.setVelocity(event.pairs[0].bodyB, {
+        x: Math.max(Math.min(ballVelocity.x, maxVelocity), -maxVelocity),
+        y: Math.max(Math.min(ballVelocity.y, maxVelocity), -maxVelocity)
+      });
       body = event.pairs[0].bodyA.render;
       body.fillStyle = 'rgb(176, 145, 80)';
       setTimeout(function () {
@@ -10666,11 +10670,25 @@ function freezePaddle(paddle) {
 
 function updateScore(points) {
   score += points;
-  document.getElementById('score').innerHTML = score;
+  var displayScore = document.getElementById('score');
+  var displayHighScore = document.getElementById('high-score');
+  displayScore.classList.add('update');
+
+  displayScore.innerHTML = score;
+  displayScore.addEventListener('transitionend', removeTransition);
+
   if (score > highScore) {
     highScore = score;
-    document.getElementById('high-score').innerHTML = highScore;
+    displayHighScore.classList.add('update');
+    displayHighScore.innerHTML = highScore;
+    displayHighScore.addEventListener('transitionend', removeTransition);
   }
+}
+
+function removeTransition(e) {
+  if (e.propertyName !== 'transform') return;
+  this.classList.remove('update');
+  this.classList.remove('lose-ball');
 }
 
 function firePaddle(e) {
@@ -10724,6 +10742,9 @@ function newGame() {
     document.removeEventListener("keyup", function keyUp(e) {
       releasePaddle(e);
     });
+    document.getElementById('score').removeEventListener('transitionend', removeTransition);
+    document.getElementById('high-score').removeEventListener('transitionend', removeTransition);
+    document.getElementById('ball-count').removeEventListener('transitionend', removeTransition);
     document.getElementById('ball-count').innerHTML = ballCount;
     updateScore(0);
   }
@@ -10735,7 +10756,6 @@ function resetGlobalVariables() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-
   setup();
   paddleCommands();
 });
