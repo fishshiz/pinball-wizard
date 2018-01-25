@@ -24,9 +24,7 @@ import Matter from 'Matter-js';
   let rightFired = false;
   let listening = false;
   const bufferGroup = Matter.Body.nextGroup(false);
-  console.log('buffer', bufferGroup);
   const paddleGroup = Matter.Body.nextGroup(false);
-  console.log('paddle', paddleGroup);
 
   function setup() {
     engine = Engine.create();
@@ -62,11 +60,9 @@ import Matter from 'Matter-js';
     let buffers = engine.world.bodies.filter(body => body.label === 'buffer');
     for (let buffer of buffers) {
       buffer.collisionFilter = { group: bufferGroup };
-      console.log(buffer);
     }
     leftPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 2 };
     rightPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 2 };
-    console.log(rightPaddle.collisionFilter);
     Engine.run(engine);
     Render.run(render);
   }
@@ -90,7 +86,6 @@ import Matter from 'Matter-js';
       openHatch();
       let pinball = createBall();
       pinball.collisionFilter = { mask: 4294967295, category: 2, group: 0 };
-      console.log(pinball.collisionFilter);
       pinball.label = 'pinball';
       World.add(engine.world, pinball);
       Matter.Body.setPosition(pinball, { x: 500, y: 650 });
@@ -138,14 +133,12 @@ import Matter from 'Matter-js';
       let ballVelocity;
 
      var pairs = event.pairs;
-    //  console.log(event.pairs[0].bodyA);
       ballVelocity = event.pairs[0].bodyB.velocity
       let xVelocity = (ballVelocity.x) * (-1.1);
 
       let yVelocity = (ballVelocity.y) * (-1.1);
 
     if(event.pairs[0].bodyB.id === 27 || event.pairs[0].bodyB.id === 29) {
-      // console.log(event.pairs[0].bodyA);
       freezePaddle(event.pairs[0].bodyA);
     } else if (event.pairs[0].bodyA.label === 'topCircle') {
       updateScore(10);
@@ -157,7 +150,6 @@ import Matter from 'Matter-js';
       setTimeout(function() {
         body.fillStyle = 'rgb(230, 149, 42)';}, 100);
       } else if (event.pairs[0].bodyA.label === 'launchpad') {
-        console.log('yp');
         updateScore(5);
         Matter.Body.setVelocity(event.pairs[0].bodyB, {x: xVelocity, y: yVelocity});
         body = event.pairs[0].bodyA.render
@@ -169,9 +161,7 @@ import Matter from 'Matter-js';
   }
 
   function freezePaddle(paddle) {
-    console.log(paddle.isSleeping);
     Matter.Sleeping.set(paddle, true);
-    console.log(paddle.isSleeping);
   }
 
   function updateScore(points) {
@@ -185,7 +175,6 @@ import Matter from 'Matter-js';
 
   function firePaddle(e) {
     let keyCode = e.keyCode;
-    console.log('butt', leftPaddle.isSleeping);
     if (keyCode === 37 && leftPaddle.isSleeping === false && leftFired === false) {
       leftFired = true;
       Matter.Body.setAngularVelocity(leftPaddle, -1);

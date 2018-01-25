@@ -10434,18 +10434,24 @@ var ballHatch = exports.ballHatch = function ballHatch() {
 };
 
 var paddles = exports.paddles = function paddles() {
-  var leftPaddle = Bodies.trapezoid(190, 540, 20, 70, 0.25, { label: 'leftPaddle', angle: 2 * Math.PI / 3, chamfer: { radius: 10 }, isSleeping: false, render: { fillStyle: COLORS.PADDLE } });
+  var leftPaddle = Bodies.trapezoid(190, 540, 25, 80, 0.25, { label: 'leftPaddle', angle: 2 * Math.PI / 3, chamfer: { radius: 10 }, isSleeping: false, render: { fillStyle: COLORS.PADDLE } });
   var leftHinge = Bodies.circle(172, 529, 5, { isStatic: true });
   var leftConstraint = Constraint.create({ bodyA: leftPaddle, bodyB: leftHinge, pointA: { x: -18, y: -11 }, stiffness: 0, length: 0 });
-  var rightPaddle = Bodies.trapezoid(300, 540, 20, 70, 0.25, { label: 'rightPaddle', angle: 4 * Math.PI / 3, chamfer: { radius: 10 }, sSleeping: false, render: { fillStyle: COLORS.PADDLE } });
+  var leftBlock = Bodies.rectangle(200, 550, 30, 30, { isStatic: false, render: { visible: false } });
+  var leftWeight = Constraint.create({ bodyA: leftPaddle, bodyB: leftBlock, pointA: { x: 13, y: 11 }, stiffness: 1, length: 1, render: { visible: false } });
+
+  var rightPaddle = Bodies.trapezoid(300, 540, 25, 80, 0.25, { label: 'rightPaddle', angle: 4 * Math.PI / 3, chamfer: { radius: 10 }, isSleeping: false, render: { fillStyle: COLORS.PADDLE } });
   var rightHinge = Bodies.circle(318, 529, 5, { isStatic: true });
   var rightConstraint = Constraint.create({ bodyA: rightPaddle, bodyB: rightHinge, pointA: { x: 18, y: -11 }, stiffness: 0, length: 0 });
+  var rightBlock = Bodies.rectangle(290, 550, 30, 30, { isStatic: false, render: { visible: false } });
+  var rightWeight = Constraint.create({ bodyA: rightPaddle, bodyB: rightBlock, pointA: { x: -13, y: 11 }, stiffness: 1, length: 1, render: { visible: false } });
+
   var leftBuffer = Bodies.circle(190, 605, 50, { label: 'buffer', isStatic: true, render: { visible: false } });
   var leftTopBuffer = Bodies.circle(190, 450, 50, { label: 'buffer', isStatic: true, render: { visible: false } });
   var rightBuffer = Bodies.circle(300, 605, 50, { label: 'buffer', isStatic: true, render: { visible: false } });
   var rightTopBuffer = Bodies.circle(300, 450, 50, { label: 'buffer', isStatic: true, render: { visible: false } });
 
-  return [leftPaddle, leftHinge, leftConstraint, rightPaddle, rightHinge, rightConstraint, leftBuffer, rightBuffer, leftTopBuffer, rightTopBuffer];
+  return [leftPaddle, leftWeight, leftHinge, leftBlock, leftConstraint, rightPaddle, rightWeight, rightBlock, rightHinge, rightConstraint, leftBuffer, rightBuffer, leftTopBuffer, rightTopBuffer];
 };
 
 /***/ }),
@@ -10487,9 +10493,7 @@ var leftFired = false;
 var rightFired = false;
 var listening = false;
 var bufferGroup = _MatterJs2.default.Body.nextGroup(false);
-console.log('buffer', bufferGroup);
 var paddleGroup = _MatterJs2.default.Body.nextGroup(false);
-console.log('paddle', paddleGroup);
 
 function setup() {
   engine = Engine.create();
@@ -10537,7 +10541,6 @@ function setup() {
       var buffer = _step.value;
 
       buffer.collisionFilter = { group: bufferGroup };
-      console.log(buffer);
     }
   } catch (err) {
     _didIteratorError = true;
@@ -10556,7 +10559,6 @@ function setup() {
 
   leftPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 2 };
   rightPaddle.collisionFilter = { group: bufferGroup, category: 4294967295, mask: 2 };
-  console.log(rightPaddle.collisionFilter);
   Engine.run(engine);
   Render.run(render);
 }
@@ -10583,7 +10585,6 @@ function launchAction(e) {
     openHatch();
     var pinball = createBall();
     pinball.collisionFilter = { mask: 4294967295, category: 2, group: 0 };
-    console.log(pinball.collisionFilter);
     pinball.label = 'pinball';
     World.add(engine.world, pinball);
     _MatterJs2.default.Body.setPosition(pinball, { x: 500, y: 650 });
@@ -10630,14 +10631,12 @@ function ballOut() {
     var ballVelocity = void 0;
 
     var pairs = event.pairs;
-    //  console.log(event.pairs[0].bodyA);
     ballVelocity = event.pairs[0].bodyB.velocity;
     var xVelocity = ballVelocity.x * -1.1;
 
     var yVelocity = ballVelocity.y * -1.1;
 
     if (event.pairs[0].bodyB.id === 27 || event.pairs[0].bodyB.id === 29) {
-      // console.log(event.pairs[0].bodyA);
       freezePaddle(event.pairs[0].bodyA);
     } else if (event.pairs[0].bodyA.label === 'topCircle') {
       updateScore(10);
@@ -10650,7 +10649,6 @@ function ballOut() {
         body.fillStyle = 'rgb(230, 149, 42)';
       }, 100);
     } else if (event.pairs[0].bodyA.label === 'launchpad') {
-      console.log('yp');
       updateScore(5);
       _MatterJs2.default.Body.setVelocity(event.pairs[0].bodyB, { x: xVelocity, y: yVelocity });
       body = event.pairs[0].bodyA.render;
@@ -10663,9 +10661,7 @@ function ballOut() {
 }
 
 function freezePaddle(paddle) {
-  console.log(paddle.isSleeping);
   _MatterJs2.default.Sleeping.set(paddle, true);
-  console.log(paddle.isSleeping);
 }
 
 function updateScore(points) {
@@ -10679,7 +10675,6 @@ function updateScore(points) {
 
 function firePaddle(e) {
   var keyCode = e.keyCode;
-  console.log('butt', leftPaddle.isSleeping);
   if (keyCode === 37 && leftPaddle.isSleeping === false && leftFired === false) {
     leftFired = true;
     _MatterJs2.default.Body.setAngularVelocity(leftPaddle, -1);
