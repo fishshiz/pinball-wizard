@@ -28,13 +28,14 @@ import Matter from 'Matter-js';
     engine = Engine.create();
 
     let render = Render.create({
-        canvas: document.getElementById('pinball-canvas'),
-        engine: engine,
-        options: {
-          width: 550,
-          height: 650,
-          wireframes: false
-        }
+      canvas: document.getElementById("pinball-canvas"),
+      engine: engine,
+      options: {
+        width: 550,
+        height: 650,
+        wireframes: false,
+        background: "#787b8aa3"
+      }
     });
 
     ballCount = 3;
@@ -148,9 +149,9 @@ import Matter from 'Matter-js';
 				y: Math.max(Math.min(ballVelocity.y, maxVelocity), -maxVelocity),
 			});
       body = event.pairs[0].bodyA.render;
-      body.fillStyle = 'rgb(176, 145, 80)';
+      body.fillStyle = '#B09150';
       setTimeout(function() {
-        body.fillStyle = 'rgb(230, 149, 42)';}, 100);
+        body.fillStyle = "#5C43B5";}, 100);
       } else if (event.pairs[0].bodyA.label === 'launchpad') {
         updateScore(5);
         Matter.Body.setVelocity(event.pairs[0].bodyB, {
@@ -158,9 +159,9 @@ import Matter from 'Matter-js';
           y: Math.max(Math.min(ballVelocity.y, maxVelocity), -maxVelocity),
         });
         body = event.pairs[0].bodyA.render;
-        body.fillStyle = 'rgb(176, 145, 80)';
+        body.fillStyle = '#B09150';
         setTimeout(function() {
-          body.fillStyle = 'rgb(169, 210, 240)';}, 100);
+          body.fillStyle = "#A9D2F0";}, 100);
       }
     });
   }

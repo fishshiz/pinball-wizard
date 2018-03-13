@@ -10371,15 +10371,7 @@ var Bodies = _MatterJs2.default.Bodies;
 var Constraint = _MatterJs2.default.Constraint;
 var bufferGroup = _MatterJs2.default.Body.nextGroup(true);
 
-var COLORS = {
-  WALLS: 'rgb(71, 156, 66)',
-  INNERWALLS: 'rgb(19, 130, 121)',
-  BUMPERS: 'rgb(169, 210, 240)',
-  BUMPERHIT: 'rgb(91, 158, 113)',
-  ORBS: 'rgb(230, 149, 42)',
-  ORBHIT: 'rgb(92, 67, 181)',
-  PADDLE: 'rgb(12, 91, 76)'
-};
+var COLORS = { WALLS: "#C4CFD4", INNERWALLS: "#608CBB", BUMPERS: "#A9D2F0", ORBS: "#5C43B5", PADDLE: "#f5a02e" };
 
 var circles = exports.circles = function circles() {
   var circle1 = Bodies.circle(235, 120, 30, { label: 'topCircle', isStatic: true, render: { fillStyle: COLORS.ORBS } });
@@ -10496,12 +10488,13 @@ function setup() {
   engine = Engine.create();
 
   var render = Render.create({
-    canvas: document.getElementById('pinball-canvas'),
+    canvas: document.getElementById("pinball-canvas"),
     engine: engine,
     options: {
       width: 550,
       height: 650,
-      wireframes: false
+      wireframes: false,
+      background: "#787b8aa3"
     }
   });
 
@@ -10645,9 +10638,9 @@ function ballOut() {
         y: Math.max(Math.min(ballVelocity.y, maxVelocity), -maxVelocity)
       });
       body = event.pairs[0].bodyA.render;
-      body.fillStyle = 'rgb(176, 145, 80)';
+      body.fillStyle = '#B09150';
       setTimeout(function () {
-        body.fillStyle = 'rgb(230, 149, 42)';
+        body.fillStyle = "#5C43B5";
       }, 100);
     } else if (event.pairs[0].bodyA.label === 'launchpad') {
       updateScore(5);
@@ -10656,9 +10649,9 @@ function ballOut() {
         y: Math.max(Math.min(ballVelocity.y, maxVelocity), -maxVelocity)
       });
       body = event.pairs[0].bodyA.render;
-      body.fillStyle = 'rgb(176, 145, 80)';
+      body.fillStyle = '#B09150';
       setTimeout(function () {
-        body.fillStyle = 'rgb(169, 210, 240)';
+        body.fillStyle = "#A9D2F0";
       }, 100);
     }
   });

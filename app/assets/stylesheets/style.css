@@ -1,7 +1,10 @@
+:root {
+  --main-lt-blue: #78BDDF;
+}
+
 .icons {
   height: 650px;
   width: 100px;
-  background-color: rgb(33, 100, 53);
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -12,8 +15,7 @@
 .icons li {
   height: 30%;
   width: 100%;
-  color: rgb(147, 231, 156);
-  background-color: rgb(33, 100, 53);
+  color: var(--main-lt-blue);
   text-decoration: none;
 }
 
@@ -22,25 +24,24 @@ a {
   text-align: center;
   height: 30%;
   width: 100%;
-  color: rgb(147, 231, 156);
+  color: var(--main-lt-blue);
 }
 
 .scorers-table {
   height: 650px;
   width: 300px;
-  background-color: transparent;
-  color: rgb(147, 231, 156);
+  background-color: #C4CFD4;
+  color: #377391;
   font-family: sans-serif;
   font-size: 25px;
   top: 0;
   margin-left: 25px;
   border-radius: 8px;
-  border: 2px solid white;
   box-shadow: 0 2px 12px -5px rgba(0,0,0,.1);
 }
 
 html {
-  background-color: rgb(33, 100, 53);
+  background-image: url('../images/space.jpg');
 }
 
 .scores {
@@ -70,7 +71,6 @@ html {
 canvas {
   border-radius: 8px;
   box-shadow: 0 2px 12px -5px rgba(0,0,0,.1);
-  border: 2px solid white;
 
 }
 
@@ -91,7 +91,7 @@ canvas {
 .title {
   display: block;
   text-align: center;
-  color: rgb(147, 231, 156);
+  color: var(--main-lt-blue);
   font: 20px verdana, sans-serif;
 }
 
